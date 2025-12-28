@@ -221,12 +221,6 @@ export default function LoginPage() {
               {error && (
                 <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-md text-sm mb-4">
                   {error}
-                  {showSetupGuide && (
-                    <div className="mt-2 text-xs">
-                      <p className="font-medium mb-2">Invalid Credentials</p>
-
-                    </div>
-                  )}
                 </div>
               )}
 
