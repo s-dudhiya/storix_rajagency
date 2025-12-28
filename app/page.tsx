@@ -96,27 +96,27 @@ export default function LoginPage() {
     }
   }
 
-  const handleSetupTestUsers = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch("/api/setup/create-test-users")
-      const data = await response.json()
+  // const handleSetupTestUsers = async () => {
+  //   try {
+  //     setLoading(true)
+  //     const response = await fetch("/api/setup/create-test-users")
+  //     const data = await response.json()
 
-      if (data.success) {
-        setError(null)
-        alert("✓ Test users created! Now you can login with the credentials below.")
-        setShowSetupGuide(false)
-        fillTestCredentials("owner")
-      } else {
-        alert("Setup already done or users already exist. Try logging in!")
-        setShowSetupGuide(false)
-      }
-    } catch (err) {
-      alert("Error setting up. Please try manually via /api/setup/create-test-users")
-    } finally {
-      setLoading(false)
-    }
-  }
+  //     if (data.success) {
+  //       setError(null)
+  //       alert("✓ Test users created! Now you can login with the credentials below.")
+  //       setShowSetupGuide(false)
+  //       fillTestCredentials("owner")
+  //     } else {
+  //       alert("Setup already done or users already exist. Try logging in!")
+  //       setShowSetupGuide(false)
+  //     }
+  //   } catch (err) {
+  //     alert("Error setting up. Please try manually via /api/setup/create-test-users")
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -200,8 +200,8 @@ export default function LoginPage() {
                 <button
                   onClick={() => setRole("owner")}
                   className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${role === "owner"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-secondary"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-secondary"
                     }`}
                 >
                   Owner
@@ -209,8 +209,8 @@ export default function LoginPage() {
                 <button
                   onClick={() => setRole("labour")}
                   className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${role === "labour"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-muted text-muted-foreground hover:bg-secondary"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-muted text-muted-foreground hover:bg-secondary"
                     }`}
                 >
                   Labour
@@ -223,14 +223,8 @@ export default function LoginPage() {
                   {error}
                   {showSetupGuide && (
                     <div className="mt-2 text-xs">
-                      <p className="font-medium mb-2">First time? Create test users:</p>
-                      <Button
-                        onClick={handleSetupTestUsers}
-                        disabled={loading}
-                        className="w-full bg-destructive/20 text-destructive hover:bg-destructive/30 text-xs py-1"
-                      >
-                        {loading ? "Setting up..." : "Click Here to Setup"}
-                      </Button>
+                      <p className="font-medium mb-2">Invalid Credentials</p>
+
                     </div>
                   )}
                 </div>
