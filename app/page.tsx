@@ -199,21 +199,19 @@ export default function LoginPage() {
               <div className="flex gap-2 mb-6">
                 <button
                   onClick={() => setRole("owner")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                    role === "owner"
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${role === "owner"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-secondary"
-                  }`}
+                    }`}
                 >
                   Owner
                 </button>
                 <button
                   onClick={() => setRole("labour")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                    role === "labour"
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${role === "labour"
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted text-muted-foreground hover:bg-secondary"
-                  }`}
+                    }`}
                 >
                   Labour
                 </button>
@@ -289,27 +287,8 @@ export default function LoginPage() {
                 </Button>
               </form>
 
-              {/* Test Credentials Info */}
-              <div className="mt-6 p-4 bg-muted rounded-lg border border-border">
-                <p className="text-xs font-medium text-foreground mb-3">Test Credentials:</p>
-                <div className="space-y-2">
-                  <button
-                    onClick={() => fillTestCredentials("owner")}
-                    className="w-full text-left text-sm px-3 py-2 bg-background rounded hover:bg-secondary transition-colors"
-                  >
-                    <span className="font-medium">Owner:</span> owner@test.com / Test@12345
-                  </button>
-                  <button
-                    onClick={() => fillTestCredentials("labour")}
-                    className="w-full text-left text-sm px-3 py-2 bg-background rounded hover:bg-secondary transition-colors"
-                  >
-                    <span className="font-medium">Labour:</span> labour@test.com / Test@12345
-                  </button>
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">
-                  Click credentials above to auto-fill the form, then click "Sign In"
-                </p>
-              </div>
+
+
             </>
           ) : (
             <>
