@@ -37,7 +37,7 @@ export async function getUserProfile(userId: string) {
 export async function resetPassword(email: string) {
   const supabase = createClient()
 
-  const redirectUrl = "https://v0-storix-ui-design-2.vercel.app/reset-password"
+  const redirectUrl = "https://storix-rajagency.vercel.app/reset-password"
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: redirectUrl,
