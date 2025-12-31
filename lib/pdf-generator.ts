@@ -272,32 +272,42 @@ export function generateStandardBill(data: BillData, action: "download" | "print
     const blob = doc.output("blob")
     const blobUrl = URL.createObjectURL(blob)
 
-    const printWindow = window.open("", "_blank")
-    if (printWindow) {
-      printWindow.document.write(`
-        <html>
-          <head>
-            <title>${fileName}</title>
-            <style>
-              body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
-              iframe { width: 100%; height: 100%; border: none; }
-            </style>
-          </head>
-          <body>
-            <iframe id="pdfFrame" src="${blobUrl}"></iframe>
-            <script>
-              const iframe = document.getElementById('pdfFrame');
-              iframe.onload = function() {
-                setTimeout(function() {
-                  iframe.contentWindow.focus();
-                  iframe.contentWindow.print();
-                }, 500);
-              };
-            </script>
-          </body>
-        </html>
-      `)
-      printWindow.document.close()
+    // Check if mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
+    if (isMobile) {
+      // On mobile, opening the blob directly is more reliable to avoid black screens
+      // Mobile browsers handles PDF viewing/printing natively well enough
+      window.open(blobUrl, "_blank")
+    } else {
+      // On desktop, use the wrapper to ensure correct filename and auto-print
+      const printWindow = window.open("", "_blank")
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>${fileName}</title>
+              <style>
+                body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
+                iframe { width: 100%; height: 100%; border: none; }
+              </style>
+            </head>
+            <body>
+              <iframe id="pdfFrame" src="${blobUrl}"></iframe>
+              <script>
+                const iframe = document.getElementById('pdfFrame');
+                iframe.onload = function() {
+                  setTimeout(function() {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                  }, 500);
+                };
+              </script>
+            </body>
+          </html>
+        `)
+        printWindow.document.close()
+      }
     }
   } else {
     doc.save(`${fileName}.pdf`)
