@@ -145,8 +145,8 @@ export default function LoginPage() {
     return (
       <main className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4">
         <div className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary rounded-xl mb-4">
-            <span className="text-2xl font-bold text-primary-foreground">S</span>
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/20 rounded-xl mb-4 border border-primary/20 shadow-sm">
+            <span className="text-3xl font-black text-primary">S</span>
           </div>
           <p className="text-muted-foreground">Loading...</p>
         </div>
@@ -164,8 +164,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary rounded-xl mb-4">
-            <span className="text-2xl font-bold text-primary-foreground">S</span>
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/20 rounded-xl mb-4 border border-primary/20 shadow-sm">
+            <span className="text-3xl font-black text-primary">S</span>
           </div>
           <h1 className="text-3xl font-bold text-foreground mb-2">STORIX</h1>
           <p className="text-muted-foreground">RAJ AGENCY-Warehouse Management System</p>

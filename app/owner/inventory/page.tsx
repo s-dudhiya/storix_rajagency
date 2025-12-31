@@ -217,7 +217,7 @@ export default function InventoryPage() {
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
         <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Inventory Management</h1>
+            <h1 className="text-xl md:text-2xl font-semibold text-foreground">Inventory Management</h1>
             <p className="text-sm text-muted-foreground hidden md:block">Manage your product inventory</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto">

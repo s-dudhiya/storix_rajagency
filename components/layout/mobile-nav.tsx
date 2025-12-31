@@ -97,12 +97,12 @@ export function MobileNav({ role }: MobileNavProps) {
         {/* Header */}
         <div className="h-20 p-4 border-b border-sidebar-border flex items-center justify-between bg-sidebar-accent/10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center border border-primary/20">
-              <span className="text-lg font-bold text-primary">S</span>
+            <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/20 shadow-sm">
+              <span className="text-xl font-black text-primary">S</span>
             </div>
-            <div>
-              <h1 className="font-bold text-lg text-sidebar-foreground tracking-tight">STORIX</h1>
-              <p className="text-[10px] font-medium text-sidebar-foreground/60 tracking-wider">RAJ AGENCY</p>
+            <div className="flex flex-col">
+              <h1 className="font-black text-xl text-sidebar-foreground tracking-wide leading-none">STORIX</h1>
+              <p className="text-[10px] font-bold text-sidebar-foreground/50 tracking-widest uppercase">Raj Agency</p>
             </div>
           </div>
           <button
@@ -125,11 +125,11 @@ export function MobileNav({ role }: MobileNavProps) {
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 group ${isActive
-                      ? "bg-sidebar-primary/10 text-sidebar-primary border-r-2 border-sidebar-primary"
-                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+                      ? "bg-sidebar-primary/10 text-sidebar-primary border-r-2 border-sidebar-primary shadow-sm"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground hover:translate-x-1"
                       }`}
                   >
-                    <span className={`transition-transform duration-200 ${isActive ? "scale-110" : "group-hover:scale-110"}`}>
+                    <span className="transition-colors duration-200">
                       {item.icon}
                     </span>
                     <span>{item.label}</span>

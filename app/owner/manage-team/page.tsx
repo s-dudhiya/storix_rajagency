@@ -169,7 +169,7 @@ export default function ManageTeamPage() {
               </button>
             </Link>
             <div>
-              <h1 className="text-2xl font-bold">Manage Team</h1>
+              <h1 className="text-xl md:text-2xl font-semibold text-foreground">Manage Team</h1>
               <p className="text-sm text-muted-foreground">Create and manage owners and labour workers</p>
             </div>
           </div>

@@ -85,7 +85,7 @@ export default function LabourOrdersPage() {
       <Sidebar role="labour" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
         <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Orders</h1>
+          <h1 className="text-xl md:text-2xl font-semibold text-foreground">My Orders</h1>
           <p className="text-sm text-muted-foreground mt-1">View your created orders</p>
         </div>
 
