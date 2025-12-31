@@ -5,6 +5,7 @@ import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { createServerClient } from "@/lib/supabase/server"
 import { PrintBillButton } from "@/components/print-bill-button"
+import { DownloadBillButton } from "@/components/download-bill-button"
 
 interface OrderItem {
   id: string
@@ -237,6 +238,27 @@ export default async function LabourOrderDetailsPage({ params }: { params: Promi
                 total_amount: orderData.total_amount,
               }}
               className="flex-1"
+            />
+            <DownloadBillButton
+              billData={{
+                bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                bill_date: orderData.order_date,
+                customer_name: orderData.customers?.name || "N/A",
+                shop_name: orderData.customers?.shop_name || undefined,
+                phone: orderData.customers?.phone || undefined,
+                items: orderData.order_items.map((item: OrderItem) => ({
+                  item_name: item.shop_items
+                    ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                    : "Unknown",
+                  quantity: item.quantity,
+                  unit_type: item.unit_type,
+                  price: item.price,
+                  total: item.total,
+                })),
+                total_amount: orderData.total_amount,
+              }}
+              className="flex-1"
+              variant="outline"
             />
             {/* Removed redundant standalone Print button as PrintBillButton handles it */}
           </div>

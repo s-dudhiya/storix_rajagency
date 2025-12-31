@@ -8,7 +8,7 @@ import { MobileNav } from "@/components/layout/mobile-nav"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Plus, Printer, Trash2, Eye } from "lucide-react"
+import { Plus, Printer, Trash2, Eye, Download } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 interface BillItem {
@@ -177,6 +177,25 @@ export default function BillsPage() {
     generateStandardBill(billData, "print")
   }
 
+  const handleDownloadBill = (bill: Bill) => {
+    const billData: BillData = {
+      bill_number: bill.bill_number,
+      bill_date: bill.bill_date,
+      customer_name: bill.customer_name,
+      shop_name: bill.shop_name || undefined,
+      phone: bill.phone || undefined,
+      items: bill.bill_items.map((item) => ({
+        item_name: item.item_name,
+        quantity: item.quantity,
+        unit_type: item.unit_type,
+        price: item.price,
+        total: item.total,
+      })),
+      total_amount: bill.total_amount,
+    }
+    generateStandardBill(billData, "download")
+  }
+
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this bill?")) return
 
@@ -275,8 +294,8 @@ export default function BillsPage() {
                       <p className="font-bold text-foreground">{bill.bill_number}</p>
                       <span
                         className={`inline-block px-2 py-1 text-xs font-medium rounded ${bill.bill_type === "app_order"
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
-                            : "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300"
+                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
+                          : "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300"
                           }`}
                       >
                         {bill.bill_type === "app_order" ? "App Order" : "Manual"}
@@ -300,6 +319,10 @@ export default function BillsPage() {
                       <Button variant="outline" size="sm" onClick={() => handlePrintBill(bill)} className="gap-2">
                         <Printer size={16} />
                         Print
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={() => handleDownloadBill(bill)} className="gap-2">
+                        <Download size={16} />
+                        Save
                       </Button>
                       <Button
                         variant="outline"
@@ -407,6 +430,10 @@ export default function BillsPage() {
                 <Button onClick={() => handlePrintBill(selectedBill)} className="flex-1 gap-2">
                   <Printer size={16} />
                   Print PDF
+                </Button>
+                <Button variant="outline" onClick={() => handleDownloadBill(selectedBill)} className="flex-1 gap-2">
+                  <Download size={16} />
+                  Download
                 </Button>
                 <Button variant="outline" onClick={() => setViewBillDialogOpen(false)}>
                   Close

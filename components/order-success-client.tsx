@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Printer, Eye, Plus } from "lucide-react"
+import { Printer, Eye, Plus, Download } from "lucide-react"
 import Link from "next/link"
 import { generateStandardBill, type BillData } from "@/lib/pdf-generator"
 
@@ -60,6 +60,31 @@ export function OrderSuccessClient({ orderData, role }: { orderData: OrderData; 
     } catch (error) {
       console.error("Error printing bill:", error)
       alert("Failed to print bill. Please try again.")
+    }
+  }
+
+  const handleDownloadBill = () => {
+    try {
+      const billNumber = orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`
+      const billData: BillData = {
+        bill_number: billNumber,
+        bill_date: orderData.order_date,
+        customer_name: orderData.customers?.name || "N/A",
+        shop_name: orderData.customers?.shop_name || undefined,
+        phone: orderData.customers?.phone || undefined,
+        items: orderData.order_items.map((item) => ({
+          item_name: item.shop_items ? `${item.shop_items.brand_name} ${item.shop_items.product_name}` : "Unknown",
+          quantity: item.quantity,
+          unit_type: item.unit_type,
+          price: item.price,
+          total: item.total,
+        })),
+        total_amount: orderData.total_amount,
+      }
+      generateStandardBill(billData, "download")
+    } catch (error) {
+      console.error("Error downloading bill:", error)
+      alert("Failed to download bill. Please try again.")
     }
   }
 
@@ -177,6 +202,14 @@ export function OrderSuccessClient({ orderData, role }: { orderData: OrderData; 
           >
             <Printer size={18} />
             Print PDF
+          </Button>
+          <Button
+            onClick={handleDownloadBill}
+            variant="outline"
+            className="w-full gap-2 bg-transparent"
+          >
+            <Download size={18} />
+            Download PDF
           </Button>
           <Link href={`/${role}/orders`} className="flex">
             <Button variant="outline" className="w-full gap-2 bg-transparent">

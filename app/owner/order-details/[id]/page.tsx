@@ -5,6 +5,7 @@ import { ChevronLeft, Download, Check, XIcon, Trash2 } from "lucide-react"
 import Link from "next/link"
 import { generateStandardBill, type BillData } from "@/lib/pdf-generator"
 import { PrintBillButton } from "@/components/print-bill-button"
+import { DownloadBillButton } from "@/components/download-bill-button"
 import { createServerClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
 
@@ -250,6 +251,27 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                 total_amount: orderData.total_amount,
               }}
               className="flex-1"
+            />
+            <DownloadBillButton
+              billData={{
+                bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                bill_date: orderData.order_date,
+                customer_name: orderData.customers?.name || "N/A",
+                shop_name: orderData.customers?.shop_name || undefined,
+                phone: orderData.customers?.phone || undefined,
+                items: orderData.order_items.map((item: OrderItem) => ({
+                  item_name: item.shop_items
+                    ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                    : "Unknown",
+                  quantity: item.quantity,
+                  unit_type: item.unit_type,
+                  price: item.price,
+                  total: item.total,
+                })),
+                total_amount: orderData.total_amount,
+              }}
+              className="flex-1"
+              variant="outline"
             />
             {orderData.order_status.toLowerCase() !== "delivered" && (
               <form
