@@ -1,10 +1,10 @@
 import { Sidebar } from "@/components/layout/sidebar"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, Download, Printer } from "lucide-react"
+import { ChevronLeft } from "lucide-react"
 import Link from "next/link"
 import { createServerClient } from "@/lib/supabase/server"
-import { generateStandardBill, type BillData } from "@/lib/pdf-generator"
+import { PrintBillButton } from "@/components/print-bill-button"
 
 interface OrderItem {
   id: string
@@ -218,40 +218,27 @@ export default async function LabourOrderDetailsPage({ params }: { params: Promi
 
           {/* Action Buttons */}
           <div className="flex gap-3">
-            <form
-              action={async () => {
-                "use server"
-                const billNumber = orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`
-                const billData: BillData = {
-                  bill_number: billNumber,
-                  bill_date: orderData.order_date,
-                  customer_name: orderData.customers?.name || "N/A",
-                  shop_name: orderData.customers?.shop_name || undefined,
-                  phone: orderData.customers?.phone || undefined,
-                  items: orderData.order_items.map((item: OrderItem) => ({
-                    item_name: item.shop_items
-                      ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
-                      : "Unknown",
-                    quantity: item.quantity,
-                    unit_type: item.unit_type,
-                    price: item.price,
-                    total: item.total,
-                  })),
-                  total_amount: orderData.total_amount,
-                }
-                generateStandardBill(billData)
+            <PrintBillButton
+              billData={{
+                bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                bill_date: orderData.order_date,
+                customer_name: orderData.customers?.name || "N/A",
+                shop_name: orderData.customers?.shop_name || undefined,
+                phone: orderData.customers?.phone || undefined,
+                items: orderData.order_items.map((item: OrderItem) => ({
+                  item_name: item.shop_items
+                    ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                    : "Unknown",
+                  quantity: item.quantity,
+                  unit_type: item.unit_type,
+                  price: item.price,
+                  total: item.total,
+                })),
+                total_amount: orderData.total_amount,
               }}
               className="flex-1"
-            >
-              <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
-                <Download size={18} />
-                Download PDF
-              </Button>
-            </form>
-            <Button variant="outline" className="flex-1 gap-2 bg-transparent">
-              <Printer size={18} />
-              Print
-            </Button>
+            />
+            {/* Removed redundant standalone Print button as PrintBillButton handles it */}
           </div>
         </div>
       </main>

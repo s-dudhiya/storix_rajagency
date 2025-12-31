@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Download, Eye, Plus } from "lucide-react"
+import { Printer, Eye, Plus } from "lucide-react"
 import Link from "next/link"
 import { generateStandardBill, type BillData } from "@/lib/pdf-generator"
 
@@ -38,7 +38,7 @@ interface OrderData {
 }
 
 export function OrderSuccessClient({ orderData, role }: { orderData: OrderData; role: "owner" | "labour" }) {
-  const handleDownloadBill = () => {
+  const handlePrintBill = () => {
     try {
       const billNumber = orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`
       const billData: BillData = {
@@ -56,10 +56,10 @@ export function OrderSuccessClient({ orderData, role }: { orderData: OrderData; 
         })),
         total_amount: orderData.total_amount,
       }
-      generateStandardBill(billData)
+      generateStandardBill(billData, "print")
     } catch (error) {
-      console.error("[v0] Error downloading bill:", error)
-      alert("Failed to download bill. Please try again.")
+      console.error("Error printing bill:", error)
+      alert("Failed to print bill. Please try again.")
     }
   }
 
@@ -172,11 +172,11 @@ export function OrderSuccessClient({ orderData, role }: { orderData: OrderData; 
         {/* Action Buttons */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
           <Button
-            onClick={handleDownloadBill}
+            onClick={handlePrintBill}
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2"
           >
-            <Download size={18} />
-            Download PDF
+            <Printer size={18} />
+            Print PDF
           </Button>
           <Link href={`/${role}/orders`} className="flex">
             <Button variant="outline" className="w-full gap-2 bg-transparent">

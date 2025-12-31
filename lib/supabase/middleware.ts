@@ -23,14 +23,19 @@ export async function updateSession(request: NextRequest) {
       },
       setAll(cookiesToSet) {
         // Update the request cookies
-        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+        cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
 
         // Update the response cookies
         response = NextResponse.next({
           request,
         })
 
-        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
+        cookiesToSet.forEach(({ name, value, options }) => {
+          // Force session cookie by removing maxAge
+          const newOptions = { ...options }
+          delete newOptions.maxAge
+          response.cookies.set(name, value, newOptions)
+        })
       },
     },
   })

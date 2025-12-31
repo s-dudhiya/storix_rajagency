@@ -104,7 +104,7 @@ export default function GenerateBillPage() {
         router.push("/owner/bills")
       }
     } catch (error) {
-      console.error("[v0] Failed to create bill:", error)
+      console.error("Failed to create bill:", error)
       alert("Failed to create bill")
     } finally {
       setSubmitting(false)

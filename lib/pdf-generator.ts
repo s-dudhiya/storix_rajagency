@@ -95,7 +95,7 @@ export interface BillData {
   total_amount: number
 }
 
-export function generateStandardBill(data: BillData): void {
+export function generateStandardBill(data: BillData, action: "download" | "print" = "print"): void {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
@@ -108,16 +108,12 @@ export function generateStandardBill(data: BillData): void {
 
   doc.setFontSize(9)
   doc.setFont("helvetica", "normal")
-  doc.text("Your Trusted Partner in Quality Products", pageWidth / 2, yPos, { align: "center" })
+  doc.text("Wholesaler in Quality Products", pageWidth / 2, yPos, { align: "center" })
   yPos += 10
 
   doc.setLineWidth(0.5)
   doc.line(15, yPos, pageWidth - 15, yPos)
   yPos += 8
-
-  doc.setFontSize(16)
-  doc.setFont("helvetica", "bold")
-  doc.text("TAX INVOICE", 15, yPos)
 
   doc.setFontSize(9)
   doc.setFont("helvetica", "normal")
@@ -256,8 +252,56 @@ export function generateStandardBill(data: BillData): void {
   doc.setFont("helvetica", "bolditalic")
   doc.text("Thank You for Your Business!", pageWidth / 2, pageHeight - 10, { align: "center" })
 
-  // Save the PDF
-  doc.save(`bill-${data.bill_number}.pdf`)
+  // Create filename: shopname_bill no
+  const namePrefix = data.shop_name || data.customer_name || "Bill"
+  const sanitizedPrefix = namePrefix.replace(/[^a-zA-Z0-9]/g, "_")
+  const sanitizedBillNo = data.bill_number.replace(/[^a-zA-Z0-9]/g, "_")
+  const fileName = `${sanitizedPrefix}_${sanitizedBillNo}`
+
+  // Set PDF metadata
+  doc.setProperties({
+    title: fileName,
+    subject: `Bill ${data.bill_number}`,
+    author: "Raj Agency",
+    creator: "Raj Agency Billing System",
+  })
+
+  if (action === "print") {
+    // We don't use autoPrint() here because we want to control the print from the wrapper
+    // to ensure the filename is respected
+    const blob = doc.output("blob")
+    const blobUrl = URL.createObjectURL(blob)
+
+    const printWindow = window.open("", "_blank")
+    if (printWindow) {
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>${fileName}</title>
+            <style>
+              body { margin: 0; padding: 0; overflow: hidden; height: 100vh; }
+              iframe { width: 100%; height: 100%; border: none; }
+            </style>
+          </head>
+          <body>
+            <iframe id="pdfFrame" src="${blobUrl}"></iframe>
+            <script>
+              const iframe = document.getElementById('pdfFrame');
+              iframe.onload = function() {
+                setTimeout(function() {
+                  iframe.contentWindow.focus();
+                  iframe.contentWindow.print();
+                }, 500);
+              };
+            </script>
+          </body>
+        </html>
+      `)
+      printWindow.document.close()
+    }
+  } else {
+    doc.save(`${fileName}.pdf`)
+  }
 }
 
 export interface InventoryReportData {
