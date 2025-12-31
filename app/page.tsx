@@ -6,7 +6,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { AlertTriangle } from "lucide-react"
+import { AlertTriangle, ArrowRight, CheckCircle2, Factory, ShieldCheck, Mail, Eye, EyeOff } from "lucide-react"
 import { signIn, getCurrentUser, resetPassword } from "@/lib/supabase/auth"
 
 export default function LoginPage() {
@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [role, setRole] = useState<"owner" | "labour">("owner")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isCheckingAuth, setIsCheckingAuth] = useState(true)
@@ -51,10 +52,7 @@ export default function LoginPage() {
     if (logoutReason === "inactivity") {
       setInactivityLogout(true)
       localStorage.removeItem("logoutReason")
-      // Clear URL parameter
       window.history.replaceState({}, "", "/")
-
-      // Auto-hide message after 10 seconds
       setTimeout(() => {
         setInactivityLogout(false)
       }, 10000)
@@ -74,7 +72,6 @@ export default function LoginPage() {
       if (user) {
         const userProfile = await fetch("/api/auth/user-profile").then((r) => r.json())
         console.log("[v0] User profile:", userProfile)
-        console.log("[v0] Redirecting to:", userProfile.role === "owner" ? "/owner/dashboard" : "/labour/dashboard")
         const redirectPath = userProfile.role === "owner" ? "/owner/dashboard" : "/labour/dashboard"
         router.push(redirectPath)
       }
@@ -86,39 +83,6 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
-
-  const fillTestCredentials = (type: "owner" | "labour") => {
-    setRole(type)
-    if (type === "owner") {
-      setEmail("owner@test.com")
-      setPassword("Test@12345")
-    } else {
-      setEmail("labour@test.com")
-      setPassword("Test@12345")
-    }
-  }
-
-  // const handleSetupTestUsers = async () => {
-  //   try {
-  //     setLoading(true)
-  //     const response = await fetch("/api/setup/create-test-users")
-  //     const data = await response.json()
-
-  //     if (data.success) {
-  //       setError(null)
-  //       alert("✓ Test users created! Now you can login with the credentials below.")
-  //       setShowSetupGuide(false)
-  //       fillTestCredentials("owner")
-  //     } else {
-  //       alert("Setup already done or users already exist. Try logging in!")
-  //       setShowSetupGuide(false)
-  //     }
-  //   } catch (err) {
-  //     alert("Error setting up. Please try manually via /api/setup/create-test-users")
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
 
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -143,235 +107,274 @@ export default function LoginPage() {
 
   if (isCheckingAuth) {
     return (
-      <main className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/20 rounded-xl mb-4 border border-primary/20 shadow-sm">
-            <span className="text-3xl font-black text-primary">S</span>
+      <main className="min-h-screen grid lg:grid-cols-2">
+        <div className="hidden lg:flex flex-col justify-center items-center bg-sidebar text-sidebar-foreground p-12">
+          <div className="animate-pulse">
+            <div className="w-16 h-16 bg-primary/20 rounded-2xl flex items-center justify-center border border-primary/20 shadow-sm mb-4">
+              <span className="text-3xl font-black text-primary">S</span>
+            </div>
           </div>
-          <p className="text-muted-foreground">Loading...</p>
+        </div>
+        <div className="flex items-center justify-center bg-background">
+          <p className="text-muted-foreground animate-pulse">Initializing Secure Session...</p>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="min-h-screen bg-linear-to-br from-background via-muted/50 to-primary/5 flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
-      </div>
-      <div className="w-full max-w-md relative z-10">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/20 rounded-xl mb-4 border border-primary/20 shadow-sm">
-            <span className="text-3xl font-black text-primary">S</span>
-          </div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">STORIX</h1>
-          <p className="text-muted-foreground">RAJ AGENCY-Warehouse Management System</p>
+    <main className="min-h-screen w-full grid lg:grid-cols-2 relative overflow-hidden">
+
+      {/* LEFT PANEL - BRANDING (Desktop Only) */}
+      <div className="hidden lg:flex relative flex-col justify-between bg-sidebar border-r border-sidebar-border p-12 overflow-hidden z-10">
+        {/* Abstract Pattern background */}
+        <div className="absolute inset-0 opacity-5 pointer-events-none">
+          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary via-transparent to-transparent" />
+          <svg className="absolute w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+              <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" strokeWidth="0.5" />
+            </pattern>
+            <rect width="100" height="100" fill="url(#grid)" />
+          </svg>
         </div>
 
-        {inactivityLogout && (
-          <div className="bg-amber-500/10 border border-amber-500/30 text-amber-700 dark:text-amber-400 px-4 py-3 rounded-lg mb-4">
-            <div className="flex items-center gap-2">
-              <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                />
-              </svg>
-              <div className="flex-1">
-                <p className="font-medium text-sm">Session Expired</p>
-                <p className="text-xs mt-0.5">You were logged out due to inactivity. Please sign in again.</p>
-              </div>
-              <button
-                onClick={() => setInactivityLogout(false)}
-                className="text-amber-700 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+        {/* Content */}
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-3 mb-8">
+            <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center border border-primary/20 shadow-md">
+              <span className="text-2xl font-black text-primary">S</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-sidebar-foreground tracking-wide leading-none">STORIX</h1>
+              <p className="text-[10px] font-bold text-sidebar-foreground/60 tracking-widest uppercase mt-0.5">Raj Agency</p>
             </div>
           </div>
-        )}
 
-        {/* Login Card */}
-        <div className="bg-card rounded-lg shadow-sm border border-border p-6 mb-4">
-          {!showForgotPassword ? (
-            <>
-              {/* Role Selection */}
-              <div className="flex gap-2 mb-6 p-1 bg-muted/30 rounded-lg border border-border/50">
-                <button
-                  onClick={() => setRole("owner")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all duration-200 ${role === "owner"
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                    }`}
-                >
-                  Owner
-                </button>
-                <button
-                  onClick={() => setRole("labour")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all duration-200 ${role === "labour"
-                    ? "bg-primary text-primary-foreground shadow-xs"
-                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-                    }`}
-                >
-                  Labour
-                </button>
+          <div className="space-y-6 max-w-md">
+            <h2 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
+              Manage your warehouse with precision.
+            </h2>
+            <p className="text-lg text-sidebar-foreground/80 leading-relaxed text-pretty">
+              The complete solution for inventory tracking, billing, and team management. Designed for efficiency.
+            </p>
+          </div>
+        </div>
+
+        <div className="relative z-10 space-y-4">
+          <div className="flex items-center gap-4 text-sm font-medium text-sidebar-foreground/70">
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <span>Real-time Sync</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <span>Secure Access</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 text-primary" />
+              <span>Smart Billing</span>
+            </div>
+          </div>
+          <p className="text-xs text-sidebar-foreground/40">© 2025 Storix</p>
+        </div>
+      </div>
+
+      {/* RIGHT PANEL - FORM */}
+      <div className="flex flex-col justify-center items-center p-6 lg:p-12 relative bg-background">
+
+        {/* Mobile Header (Visible only on small screens) */}
+        <div className="lg:hidden w-full max-w-[400px] mb-8 text-center">
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-primary/10 rounded-2xl mb-4 border border-primary/10 shadow-sm">
+            <span className="text-3xl font-black text-primary">S</span>
+          </div>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">Welcome Back</h1>
+          <p className="text-muted-foreground mt-2">Sign in to your account</p>
+        </div>
+
+        <div className="w-full max-w-[400px] space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+
+          {/* Inactivity Alert */}
+          {inactivityLogout && (
+            <div className="bg-amber-500/10 border border-amber-500/20 text-amber-700 dark:text-amber-500 px-4 py-3 rounded-lg flex items-start gap-3 shadow-sm">
+              <ShieldCheck className="w-5 h-5 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium text-sm">Session Expired</p>
+                <p className="text-xs opacity-90">For your security, you were logged out.</p>
               </div>
+            </div>
+          )}
 
-              {/* Error Message */}
-              {error && (
-                <Alert variant="destructive" className="mb-6">
-                  <AlertTriangle className="h-4 w-4" />
-                  <AlertTitle>Authentication Failed</AlertTitle>
-                  <AlertDescription>
-                    {error}
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              {/* Form */}
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    required
-                  />
+          {/* MAIN FORM CARD */}
+          <div className="space-y-6">
+            {!showForgotPassword ? (
+              <>
+                <div className="space-y-2 text-center lg:text-left">
+                  <h2 className="text-3xl font-bold tracking-tight text-foreground hidden lg:block">Sign in</h2>
+                  <p className="text-muted-foreground hidden lg:block">Access your dashboard and manage operations.</p>
                 </div>
 
-                <div>
-                  <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
-                    Password
-                  </label>
-                  <input
-                    id="password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    required
-                  />
-                </div>
-
-                <div className="text-right">
+                {/* Role Switcher */}
+                <div className="grid grid-cols-2 p-1 bg-muted/40 rounded-xl border border-border/50">
                   <button
-                    type="button"
-                    onClick={() => setShowForgotPassword(true)}
-                    className="text-sm text-primary hover:underline"
+                    onClick={() => setRole("owner")}
+                    className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-300 ${role === "owner"
+                      ? "bg-background text-foreground shadow-sm ring-1 ring-black/5"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      }`}
                   >
-                    Forgot password?
+                    <ShieldCheck className="w-4 h-4" />
+                    Owner
+                  </button>
+                  <button
+                    onClick={() => setRole("labour")}
+                    className={`flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg text-sm font-semibold transition-all duration-300 ${role === "labour"
+                      ? "bg-background text-foreground shadow-sm ring-1 ring-black/5"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                      }`}
+                  >
+                    <Factory className="w-4 h-4" />
+                    Labour
                   </button>
                 </div>
 
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium py-2"
-                >
-                  {loading ? "Signing in..." : "Sign In"}
-                </Button>
-              </form>
-
-
-
-            </>
-          ) : (
-            <>
-              {!resetEmailSent ? (
-                <>
-                  <h2 className="text-xl font-semibold text-foreground mb-2">Reset Password</h2>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    Enter your email address and we'll send you a link to reset your password.
-                  </p>
-
-                  {error && (
-                    <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-md text-sm mb-4">
+                {/* Error Alert */}
+                {error && (
+                  <Alert variant="destructive" className="border-destructive/20 bg-destructive/5 animate-in fade-in zoom-in-95">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>
                       {error}
-                    </div>
-                  )}
+                    </AlertDescription>
+                  </Alert>
+                )}
 
-                  <form onSubmit={handleForgotPassword} className="space-y-4">
-                    <div>
-                      <label htmlFor="reset-email" className="block text-sm font-medium text-foreground mb-2">
-                        Email
-                      </label>
+                <form onSubmit={handleLogin} className="space-y-5">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="email">Email</label>
+                    <input
+                      id="email"
+                      type="email"
+                      placeholder="name@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-sm font-medium leading-none" htmlFor="password">Password</label>
+                      <button
+                        type="button"
+                        onClick={() => setShowForgotPassword(true)}
+                        className="text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                    <div className="relative">
                       <input
-                        id="reset-email"
-                        type="email"
-                        placeholder="your@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200 pr-10"
                         required
                       />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-11 text-base font-semibold shadow-md active:scale-[0.98] transition-all"
+                  >
+                    {loading ? "Signing in..." : "Sign In"}
+                    {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
+                  </Button>
+                </form>
+              </>
+            ) : (
+              <div className="animate-in fade-in slide-in-from-right-8 duration-500">
+                {!resetEmailSent ? (
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <h2 className="text-2xl font-bold tracking-tight">Reset Password</h2>
+                      <p className="text-muted-foreground text-sm">Enter your email to receive a reset link.</p>
                     </div>
 
-                    <Button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium py-2"
-                    >
-                      {loading ? "Sending..." : "Send Reset Link"}
-                    </Button>
+                    {error && (
+                      <Alert variant="destructive" className="border-destructive/20 bg-destructive/5">
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertDescription>{error}</AlertDescription>
+                      </Alert>
+                    )}
 
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        setShowForgotPassword(false)
-                        setError(null)
-                      }}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Back to Login
-                    </Button>
-                  </form>
-                </>
-              ) : (
-                <>
-                  <div className="text-center py-6">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-green-500/10 rounded-full mb-4">
-                      <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+                    <form onSubmit={handleForgotPassword} className="space-y-4">
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium leading-none" htmlFor="reset-email">Email</label>
+                        <input
+                          id="reset-email"
+                          type="email"
+                          placeholder="name@example.com"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          className="flex h-11 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:border-primary/50 transition-all duration-200"
+                          required
+                        />
+                      </div>
+                      <Button type="submit" disabled={loading} className="w-full h-11 font-semibold">
+                        {loading ? "Sending..." : "Send Reset Link"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={() => {
+                          setShowForgotPassword(false)
+                          setError(null)
+                        }}
+                        className="w-full h-11"
+                      >
+                        Back to Login
+                      </Button>
+                    </form>
+                  </div>
+                ) : (
+                  <div className="text-center space-y-6">
+                    <div className="w-16 h-16 bg-green-500/10 text-green-600 rounded-full flex items-center justify-center mx-auto ring-4 ring-green-500/5">
+                      <Mail className="w-8 h-8" />
                     </div>
-                    <h2 className="text-xl font-semibold text-foreground mb-2">Check Your Email</h2>
-                    <p className="text-sm text-muted-foreground mb-6">
-                      We've sent a password reset link to <strong>{email}</strong>
-                    </p>
+                    <div className="space-y-2">
+                      <h3 className="text-xl font-bold">Check your inbox</h3>
+                      <p className="text-muted-foreground text-sm">
+                        We've sent a password reset link to <br />
+                        <span className="font-semibold text-foreground">{email}</span>
+                      </p>
+                    </div>
                     <Button
                       onClick={() => {
                         setShowForgotPassword(false)
                         setResetEmailSent(false)
                         setError(null)
                       }}
-                      className="w-full"
+                      variant="outline"
+                      className="w-full h-11"
                     >
                       Back to Login
                     </Button>
                   </div>
-                </>
-              )}
-            </>
-          )}
+                )}
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Footer */}
-        <p className="text-center text-xs text-muted-foreground">STORIX © 2025 | Warehouse Management</p>
       </div>
     </main>
   )
