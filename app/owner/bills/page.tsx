@@ -216,12 +216,12 @@ export default function BillsPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40 flex items-center justify-between">
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">Bills</h1>
             <p className="text-sm text-muted-foreground mt-1">Manage and generate bills</p>
           </div>
-          <Button onClick={() => router.push("/owner/generate-bill")} className="gap-2">
+          <Button onClick={() => router.push("/owner/generate-bill")} className="gap-2 w-full md:w-auto">
             <Plus size={18} />
             Generate Bill
           </Button>
@@ -295,7 +295,7 @@ export default function BillsPage() {
                     <div className="text-right">
                       <p className="text-xl font-bold text-primary">₹{bill.total_amount.toFixed(2)}</p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap justify-end mt-4 sm:mt-0">
                       <Button variant="outline" size="sm" onClick={() => handleViewBill(bill)} className="gap-2">
                         <Eye size={16} />
                         View
@@ -386,7 +386,7 @@ export default function BillsPage() {
               </div>
 
               {/* Items Table */}
-              <div className="border rounded-lg overflow-hidden">
+              <div className="border rounded-lg overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead className="bg-primary text-primary-foreground">
                     <tr>

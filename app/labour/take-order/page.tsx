@@ -211,9 +211,11 @@ export default function LabourTakeOrderPage() {
       <div className="flex min-h-screen bg-background">
         <Sidebar role="labour" />
         <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-          <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Create Order - Step 1</h1>
-            <p className="text-sm text-muted-foreground mt-1">Select or create a customer</p>
+          <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Create Order - Step 1</h1>
+              <p className="text-sm text-muted-foreground mt-1">Select or create a customer</p>
+            </div>
           </div>
 
           <div className="p-4 md:p-6 max-w-md mx-auto">
@@ -307,7 +309,7 @@ export default function LabourTakeOrderPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="labour" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40 flex items-center justify-between">
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-foreground">Create Order - Step 2</h1>
             <p className="text-sm text-muted-foreground mt-1">
@@ -387,16 +389,16 @@ export default function LabourTakeOrderPage() {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => updateQuantity(item.product_id, item.unit_type, -1)}
-                                className="p-1 rounded hover:bg-background"
+                                className="p-2 rounded-md hover:bg-background border border-transparent hover:border-border transition-colors"
                               >
-                                <Minus size={14} />
+                                <Minus size={16} />
                               </button>
                               <span className="w-8 text-center text-sm">{item.quantity}</span>
                               <button
                                 onClick={() => updateQuantity(item.product_id, item.unit_type, 1)}
-                                className="p-1 rounded hover:bg-background"
+                                className="p-2 rounded-md hover:bg-background border border-transparent hover:border-border transition-colors"
                               >
-                                <Plus size={14} />
+                                <Plus size={16} />
                               </button>
                             </div>
                             <p className="text-sm font-medium">₹{item.price * item.quantity}</p>

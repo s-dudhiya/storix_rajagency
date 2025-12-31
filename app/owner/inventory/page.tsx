@@ -215,19 +215,19 @@ export default function InventoryPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 flex justify-between items-center">
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Inventory Management</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage your product inventory</p>
+            <h1 className="text-2xl font-bold text-foreground">Inventory Management</h1>
+            <p className="text-sm text-muted-foreground hidden md:block">Manage your product inventory</p>
           </div>
-          <div className="flex gap-2">
-            <Button onClick={handleExportPDF} variant="outline" className="gap-2 bg-transparent">
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button onClick={handleExportPDF} variant="outline" className="flex-1 md:flex-none gap-2 bg-transparent">
               <FileDown size={16} />
               Export PDF
             </Button>
             <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2">
+                <Button className="flex-1 md:flex-none gap-2">
                   <Plus size={16} />
                   Add Product
                 </Button>
@@ -238,32 +238,32 @@ export default function InventoryPage() {
                   <DialogDescription>Enter the details of the new product to add to your inventory.</DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="brand" className="text-right">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 items-start sm:items-center gap-2 sm:gap-4">
+                    <Label htmlFor="brand" className="text-left sm:text-right">
                       Brand
                     </Label>
                     <Input
                       id="brand"
                       value={newProduct.brand_name}
                       onChange={(e) => setNewProduct({ ...newProduct, brand_name: e.target.value })}
-                      className="col-span-3"
+                      className="col-span-1 sm:col-span-3"
                       placeholder="e.g. Nestle"
                     />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 items-start sm:items-center gap-2 sm:gap-4">
+                    <Label htmlFor="name" className="text-left sm:text-right">
                       Name
                     </Label>
                     <Input
                       id="name"
                       value={newProduct.product_name}
                       onChange={(e) => setNewProduct({ ...newProduct, product_name: e.target.value })}
-                      className="col-span-3"
+                      className="col-span-1 sm:col-span-3"
                       placeholder="e.g. KitKat"
                     />
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="stock" className="text-right">
+                  <div className="grid grid-cols-1 sm:grid-cols-4 items-start sm:items-center gap-2 sm:gap-4">
+                    <Label htmlFor="stock" className="text-left sm:text-right">
                       Stock
                     </Label>
                     <Input
@@ -284,7 +284,7 @@ export default function InventoryPage() {
                       onFocus={(e) => {
                         if (e.target.value === "0") e.target.value = ""
                       }}
-                      className="col-span-3"
+                      className="col-span-1 sm:col-span-3"
                     />
                   </div>
                 </div>
@@ -327,8 +327,8 @@ export default function InventoryPage() {
             </div>
           </div>
 
-          {/* Inventory Table */}
-          <div className="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+          {/* Desktop Inventory Table */}
+          <div className="hidden md:block bg-card border border-border rounded-lg shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted border-b border-border">
@@ -397,6 +397,68 @@ export default function InventoryPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Mobile Inventory Card View */}
+          <div className="md:hidden space-y-4">
+            {filteredItems.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                {items.length === 0 ? "No products found" : "No matching products"}
+              </div>
+            ) : (
+              filteredItems.map((item) => (
+                <div key={item.id} className="bg-card border border-border rounded-lg p-4 shadow-sm">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-bold text-foreground">{item.product_name}</h3>
+                      <p className="text-sm text-muted-foreground">{item.brand_name}</p>
+                    </div>
+                    <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded">
+                      #{item.sr_no}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center my-3">
+                    <span className="text-sm text-muted-foreground">Stock Level:</span>
+                    {item.stock_quantity <= lowStockThreshold ? (
+                      <span className="inline-block px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 rounded text-xs font-medium">
+                        {item.stock_quantity} ⚠️
+                      </span>
+                    ) : (
+                      <span className="text-foreground font-medium">{item.stock_quantity}</span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border">
+                    <Button
+                      onClick={() => {
+                        setQuickReduceId(item.id)
+                        setQuickReduceAmount(0)
+                      }}
+                      size="sm"
+                      variant="outline"
+                      className="text-xs gap-1 text-orange-600 hover:text-orange-700"
+                    >
+                      <Minus size={12} />
+                      Reduce
+                    </Button>
+                    <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="text-xs gap-1">
+                      <Edit2 size={12} />
+                      Edit
+                    </Button>
+                    <Button
+                      onClick={() => setDeletingId(item.id)}
+                      size="sm"
+                      variant="outline"
+                      className="text-xs gap-1 text-destructive hover:text-destructive"
+                    >
+                      <Trash2 size={12} />
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           {/* Edit Modal */}

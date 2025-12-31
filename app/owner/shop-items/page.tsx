@@ -172,12 +172,12 @@ export default function ShopItemsPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 flex justify-between items-center">
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Shop Items</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage items available in your shop</p>
+            <h1 className="text-2xl font-bold text-foreground">Shop Items</h1>
+            <p className="text-sm text-muted-foreground hidden md:block">Manage items available in your shop</p>
           </div>
-          <Button className="gap-2" onClick={() => setIsAddOpen(true)}>
+          <Button className="gap-2 w-full md:w-auto" onClick={() => setIsAddOpen(true)}>
             <Plus size={16} />
             Add Item
           </Button>
@@ -197,7 +197,8 @@ export default function ShopItemsPage() {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+          {/* Desktop Table View */}
+          <div className="hidden md:block bg-card border border-border rounded-lg shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted border-b border-border">
@@ -271,6 +272,72 @@ export default function ShopItemsPage() {
                 </tbody>
               </table>
             </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-4">
+            {filteredItems.length === 0 ? (
+              <div className="text-center py-8 text-muted-foreground">
+                {items.length === 0 ? "No shop items found" : "No matching items"}
+              </div>
+            ) : (
+              filteredItems.map((item) => (
+                <div key={item.id} className="bg-card border border-border rounded-lg p-4 shadow-sm">
+                  <div className="flex justify-between items-start mb-2">
+                    <div>
+                      <h3 className="font-bold text-foreground">{item.product_name}</h3>
+                      <p className="text-sm text-muted-foreground">{item.brand_name}</p>
+                    </div>
+                    <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded">
+                      #{item.sr_no}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-border">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-muted-foreground">Price:</span>
+                      {editingId === item.id ? (
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={editValues.selling_price || ""}
+                          onChange={(e) => {
+                            const val = e.target.value
+                            if (val === "" || val === "0") {
+                              setEditValues({ selling_price: "" as any })
+                            } else {
+                              setEditValues({ selling_price: Number(val.replace(/^0+/, "")) || ("" as any) })
+                            }
+                          }}
+                          onFocus={(e) => {
+                            if (e.target.value === "0") e.target.value = ""
+                          }}
+                          onBlur={handleSave}
+                          autoFocus
+                          className="w-20 px-2 py-1 bg-input border border-border rounded text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                          placeholder="Price"
+                        />
+                      ) : (
+                        <span className="font-bold text-foreground">₹{item.selling_price}</span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-8 w-8 p-0">
+                        <Edit2 size={14} />
+                      </Button>
+                      <Button
+                        onClick={() => setDeletingId(item.id)}
+                        size="sm"
+                        variant="outline"
+                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
 
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>

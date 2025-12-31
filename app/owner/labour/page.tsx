@@ -137,12 +137,10 @@ export default function LabourManagementPage() {
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
         {/* Header */}
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
-          <div className="flex items-center justify-between flex-col sm:flex-row gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Labour Management</h1>
-              <p className="text-sm text-muted-foreground mt-1">View and manage labour user accounts</p>
-            </div>
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Labour Management</h1>
+            <p className="text-sm text-muted-foreground mt-1">View and manage labour user accounts</p>
           </div>
         </div>
 

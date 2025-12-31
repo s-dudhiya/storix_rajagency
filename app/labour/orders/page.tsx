@@ -84,7 +84,7 @@ export default function LabourOrdersPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="labour" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">My Orders</h1>
           <p className="text-sm text-muted-foreground mt-1">View your created orders</p>
         </div>
@@ -96,11 +96,10 @@ export default function LabourOrdersPage() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
-                  activeTab === tab
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-secondary"
-                }`}
+                className={`px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${activeTab === tab
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-secondary"
+                  }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
@@ -132,16 +131,18 @@ export default function LabourOrdersPage() {
                         {new Date(order.order_date).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full sm:w-auto">
                       <div className="text-right">
                         <p className="text-xl font-bold text-primary">₹{order.total_amount.toFixed(2)}</p>
                       </div>
-                      <Link href={`/labour/order-details/${order.id}`}>
-                        <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                          <Eye size={16} />
-                          View
-                        </Button>
-                      </Link>
+                      <div className="w-full sm:w-auto">
+                        <Link href={`/labour/order-details/${order.id}`} className="w-full block">
+                          <Button variant="outline" size="sm" className="gap-2 bg-transparent w-full">
+                            <Eye size={16} />
+                            View
+                          </Button>
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 </div>

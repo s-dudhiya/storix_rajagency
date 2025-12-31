@@ -111,7 +111,7 @@ export default function OrdersPage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
           <h1 className="text-2xl md:text-3xl font-bold text-foreground">Order History</h1>
           <p className="text-sm text-muted-foreground mt-1">View and manage all orders</p>
         </div>
@@ -124,8 +124,8 @@ export default function OrdersPage() {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${activeTab === tab
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-secondary"
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-muted text-muted-foreground hover:bg-secondary"
                   }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
@@ -186,24 +186,26 @@ export default function OrdersPage() {
                         {new Date(order.order_date).toLocaleDateString()}
                       </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                    <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3 w-full sm:w-auto">
                       <div className="text-right">
                         <p className="text-xl font-bold text-primary">₹{order.total_amount.toFixed(2)}</p>
                       </div>
-                      <Link href={`/owner/order-details/${order.id}`}>
-                        <Button variant="outline" size="sm" className="gap-2 bg-transparent">
-                          <Eye size={16} />
-                          View
+                      <div className="flex gap-2 w-full sm:w-auto">
+                        <Link href={`/owner/order-details/${order.id}`} className="flex-1 sm:flex-none">
+                          <Button variant="outline" size="sm" className="gap-2 bg-transparent w-full">
+                            <Eye size={16} />
+                            View
+                          </Button>
+                        </Link>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(order.id)}
+                          className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 flex-1 sm:flex-none"
+                        >
+                          <Trash2 size={16} />
                         </Button>
-                      </Link>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(order.id)}
-                        className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
+                      </div>
                     </div>
                   </div>
                 </div>

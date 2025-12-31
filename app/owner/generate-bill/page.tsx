@@ -212,7 +212,7 @@ export default function GenerateBillPage() {
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-[400px] p-0" align="start">
+                        <PopoverContent className="w-[300px] sm:w-[400px] p-0" align="start">
                           <Command>
                             <CommandInput placeholder="Search shop items..." />
                             <CommandList>
@@ -233,10 +233,10 @@ export default function GenerateBillPage() {
                                       )}
                                     />
                                     <div className="flex-1 flex justify-between items-center">
-                                      <span>
+                                      <span className="truncate mr-2">
                                         {shopItem.brand_name} {shopItem.product_name}
                                       </span>
-                                      <span className="text-sm font-semibold text-primary ml-4">
+                                      <span className="text-sm font-semibold text-primary whitespace-nowrap">
                                         ₹{shopItem.selling_price}
                                       </span>
                                     </div>
@@ -254,68 +254,73 @@ export default function GenerateBillPage() {
                         className="h-10 mt-2 text-sm"
                       />
                     </div>
-                    <div className="md:col-span-2">
-                      <Label className="text-sm mb-2 block">Quantity*</Label>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        value={item.quantity}
-                        onChange={(e) => {
-                          const val = e.target.value
-                          if (val === "" || val === "0") {
-                            handleItemChange(index, "quantity", "")
-                          } else {
-                            handleItemChange(index, "quantity", val.replace(/^0+/, ""))
-                          }
-                        }}
-                        onFocus={(e) => {
-                          if (e.target.value === "0") e.target.value = ""
-                        }}
-                        className="h-12 text-base"
-                        required
-                      />
+
+                    {/* Row for Qty, Unit, Price on mobile, columns on desktop */}
+                    <div className="md:col-span-6 grid grid-cols-3 gap-3">
+                      <div className="col-span-1 md:col-span-1">
+                        <Label className="text-sm mb-2 block">Qty*</Label>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          value={item.quantity}
+                          onChange={(e) => {
+                            const val = e.target.value
+                            if (val === "" || val === "0") {
+                              handleItemChange(index, "quantity", "")
+                            } else {
+                              handleItemChange(index, "quantity", val.replace(/^0+/, ""))
+                            }
+                          }}
+                          onFocus={(e) => {
+                            if (e.target.value === "0") e.target.value = ""
+                          }}
+                          className="h-12 text-base px-2"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-1 md:col-span-1">
+                        <Label className="text-sm mb-2 block">Unit*</Label>
+                        <select
+                          className="w-full h-12 px-2 bg-input border border-border rounded-md text-base focus:outline-none focus:ring-2 focus:ring-ring"
+                          value={item.unit_type}
+                          onChange={(e) => handleItemChange(index, "unit_type", e.target.value)}
+                        >
+                          <option value="piece">Pcs</option>
+                          <option value="carton">Box</option>
+                          <option value="kg">KG</option>
+                        </select>
+                      </div>
+                      <div className="col-span-1 md:col-span-1">
+                        <Label className="text-sm mb-2 block">Price*</Label>
+                        <Input
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={item.price}
+                          onChange={(e) => {
+                            const val = e.target.value
+                            if (val === "" || val === "0") {
+                              handleItemChange(index, "price", "")
+                            } else {
+                              handleItemChange(index, "price", val.replace(/^0+(?=\d)/, ""))
+                            }
+                          }}
+                          onFocus={(e) => {
+                            if (e.target.value === "0") e.target.value = ""
+                          }}
+                          className="h-12 text-base px-2"
+                          required
+                        />
+                      </div>
                     </div>
-                    <div className="md:col-span-2">
-                      <Label className="text-sm mb-2 block">Unit*</Label>
-                      <select
-                        className="w-full h-12 px-4 bg-input border border-border rounded-md text-base focus:outline-none focus:ring-2 focus:ring-ring"
-                        value={item.unit_type}
-                        onChange={(e) => handleItemChange(index, "unit_type", e.target.value)}
-                      >
-                        <option value="piece">Piece</option>
-                        <option value="carton">Carton</option>
-                        <option value="kg">KG</option>
-                      </select>
-                    </div>
-                    <div className="md:col-span-2">
-                      <Label className="text-sm mb-2 block">Price*</Label>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        value={item.price}
-                        onChange={(e) => {
-                          const val = e.target.value
-                          if (val === "" || val === "0") {
-                            handleItemChange(index, "price", "")
-                          } else {
-                            handleItemChange(index, "price", val.replace(/^0+(?=\d)/, ""))
-                          }
-                        }}
-                        onFocus={(e) => {
-                          if (e.target.value === "0") e.target.value = ""
-                        }}
-                        className="h-12 text-base"
-                        required
-                      />
-                    </div>
+
                     {items.length > 1 && (
-                      <div className="md:col-span-1 flex items-end">
+                      <div className="md:col-span-1 flex items-end justify-end md:justify-start">
                         <Button
                           type="button"
                           size="sm"
                           variant="ghost"
-                          className="h-12 w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+                          className="h-12 w-12 text-destructive hover:text-destructive hover:bg-destructive/10"
                           onClick={() => handleRemoveItem(index)}
                         >
                           <Trash2 size={20} />

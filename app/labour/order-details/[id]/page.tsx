@@ -218,7 +218,7 @@ export default async function LabourOrderDetailsPage({ params }: { params: Promi
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <PrintBillButton
               billData={{
                 bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,

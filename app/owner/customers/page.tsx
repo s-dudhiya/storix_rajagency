@@ -117,24 +117,22 @@ export default function CustomersPage() {
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
         {/* Header */}
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Customers</h1>
-              <p className="text-sm text-muted-foreground mt-1">Manage your customer database</p>
-            </div>
-            <Button
-              onClick={() => {
-                setFormData({ name: "", shop_name: "", phone: "", area: "" })
-                setEditingId(null)
-                setShowForm(true)
-              }}
-              className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
-            >
-              <Plus size={18} />
-              Add Customer
-            </Button>
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Customers</h1>
+            <p className="text-sm text-muted-foreground mt-1">Manage your customer database</p>
           </div>
+          <Button
+            onClick={() => {
+              setFormData({ name: "", shop_name: "", phone: "", area: "" })
+              setEditingId(null)
+              setShowForm(true)
+            }}
+            className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus size={18} />
+            Add Customer
+          </Button>
         </div>
 
         {/* Content */}

@@ -160,7 +160,7 @@ export default function ManageTeamPage() {
     <main className="min-h-screen bg-background p-4 md:p-6 pt-16 md:pt-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="md:sticky md:top-0 md:z-40 bg-background pb-4 flex items-center justify-between mb-6">
+        <div className="md:sticky md:top-0 md:z-40 bg-background pb-4 md:pb-0 md:h-20 flex flex-col md:flex-row items-start md:items-center justify-between mb-6 gap-4">
           <div className="flex items-center gap-3">
             <Link href="/owner/dashboard">
               <button className="p-2 hover:bg-muted rounded-lg transition-colors">
@@ -172,12 +172,12 @@ export default function ManageTeamPage() {
               <p className="text-sm text-muted-foreground">Create and manage owners and labour workers</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={fetchOrphanedUsers} disabled={loadingOrphaned}>
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button variant="outline" onClick={fetchOrphanedUsers} disabled={loadingOrphaned} className="flex-1 md:flex-none">
               <AlertTriangle className="w-4 h-4 mr-2" />
               {loadingOrphaned ? "Checking..." : "Cleanup"}
             </Button>
-            <Button onClick={() => setShowAddForm(true)} className="flex items-center gap-2">
+            <Button onClick={() => setShowAddForm(true)} className="flex items-center gap-2 flex-1 md:flex-none">
               <Plus className="w-4 h-4" />
               Add Member
             </Button>

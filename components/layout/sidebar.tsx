@@ -6,7 +6,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { signOut } from "@/lib/supabase/auth"
-import { Home, Package, Settings, LogOut, ShoppingCart, Users, BarChart3, FileText, Receipt, Store } from "lucide-react"
+import { Home, Package, Settings, LogOut, ShoppingCart, Users, Warehouse, FileText, Receipt, Store } from "lucide-react"
 
 interface NavItem {
   icon: React.ReactNode
@@ -27,7 +27,7 @@ export function Sidebar({ role }: SidebarProps) {
     { icon: <ShoppingCart size={20} />, label: "Take Order", href: "/owner/take-order" },
     { icon: <Package size={20} />, label: "Catalogue", href: "/owner/catalogue" },
     { icon: <Store size={20} />, label: "Shop Items", href: "/owner/shop-items" },
-    { icon: <BarChart3 size={20} />, label: "Inventory", href: "/owner/inventory" },
+    { icon: <Warehouse size={20} />, label: "Inventory", href: "/owner/inventory" },
     { icon: <FileText size={20} />, label: "Orders", href: "/owner/orders" },
     { icon: <Receipt size={20} />, label: "Bills", href: "/owner/bills" },
     { icon: <Users size={20} />, label: "Customers", href: "/owner/customers" },
@@ -55,7 +55,7 @@ export function Sidebar({ role }: SidebarProps) {
   return (
     <aside className="hidden md:flex w-64 bg-sidebar border-r border-sidebar-border flex-col h-screen fixed left-0 top-0">
       {/* Logo */}
-      <div className="h-16 p-4 border-b border-sidebar-border flex items-center">
+      <div className="h-20 p-4 border-b border-sidebar-border flex items-center">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
             <span className="text-lg font-bold text-primary-foreground">S</span>
@@ -76,11 +76,10 @@ export function Sidebar({ role }: SidebarProps) {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                    isActive
-                      ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                      : "text-sidebar-foreground hover:bg-sidebar-accent"
-                  }`}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                    : "text-sidebar-foreground hover:bg-sidebar-accent"
+                    }`}
                 >
                   {item.icon}
                   <span>{item.label}</span>

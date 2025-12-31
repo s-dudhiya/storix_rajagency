@@ -91,12 +91,11 @@ export function MobileNav({ role }: MobileNavProps) {
       {isOpen && <div className="md:hidden fixed inset-0 bg-black/50 z-[90]" onClick={() => setIsOpen(false)} />}
 
       <aside
-        className={`md:hidden fixed top-0 right-0 bottom-0 w-72 bg-sidebar border-l border-sidebar-border flex flex-col z-[95] transform transition-transform duration-300 ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`md:hidden fixed top-0 right-0 bottom-0 w-72 bg-sidebar border-l border-sidebar-border flex flex-col z-[95] transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         {/* Header */}
-        <div className="h-16 p-4 border-b border-sidebar-border flex items-center justify-between">
+        <div className="h-20 p-4 border-b border-sidebar-border flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <span className="text-sm font-bold text-primary-foreground">S</span>
@@ -125,11 +124,10 @@ export function MobileNav({ role }: MobileNavProps) {
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive
+                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
                         ? "bg-sidebar-primary text-sidebar-primary-foreground"
                         : "text-sidebar-foreground hover:bg-sidebar-accent"
-                    }`}
+                      }`}
                   >
                     {item.icon}
                     <span>{item.label}</span>

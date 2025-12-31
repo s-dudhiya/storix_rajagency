@@ -266,9 +266,11 @@ export default function TakeOrderPage() {
       <div className="flex min-h-screen bg-background">
         <Sidebar role="owner" />
         <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-          <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Take Order - Step 1</h1>
-            <p className="text-sm text-muted-foreground mt-1">Select or create a customer</p>
+          <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Take Order - Step 1</h1>
+              <p className="text-sm text-muted-foreground mt-1">Select or create a customer</p>
+            </div>
           </div>
 
           <div className="p-4 md:p-6 max-w-md mx-auto">
@@ -359,7 +361,7 @@ export default function TakeOrderPage() {
       <Sidebar role="owner" />
       {step === 2 && (
         <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-          <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40 flex items-center justify-between">
+          <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground">Take Order - Step 2</h1>
               <p className="text-sm text-muted-foreground mt-1">
@@ -374,7 +376,7 @@ export default function TakeOrderPage() {
           <div className="p-4 md:p-6">
             <div className="grid md:grid-cols-3 gap-6">
               <div className="md:col-span-2 space-y-4">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
                     <input
@@ -385,7 +387,7 @@ export default function TakeOrderPage() {
                       className="w-full pl-10 pr-3 py-2 bg-input border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     />
                   </div>
-                  <Button onClick={() => setIsAddItemOpen(true)} className="gap-2">
+                  <Button onClick={() => setIsAddItemOpen(true)} className="gap-2 w-full sm:w-auto">
                     <Plus size={16} />
                     Add Item
                   </Button>
@@ -464,16 +466,16 @@ export default function TakeOrderPage() {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => updateQuantity(item.product_id, item.unit_type, -1)}
-                                className="p-1 rounded hover:bg-background"
+                                className="p-2 rounded-md hover:bg-background border border-transparent hover:border-border transition-colors"
                               >
-                                <Minus size={14} />
+                                <Minus size={16} />
                               </button>
                               <span className="w-8 text-center text-sm">{item.quantity}</span>
                               <button
                                 onClick={() => updateQuantity(item.product_id, item.unit_type, 1)}
-                                className="p-1 rounded hover:bg-background"
+                                className="p-2 rounded-md hover:bg-background border border-transparent hover:border-border transition-colors"
                               >
-                                <Plus size={14} />
+                                <Plus size={16} />
                               </button>
                             </div>
                             <p className="text-sm font-medium">₹{(item.price * item.quantity).toFixed(2)}</p>

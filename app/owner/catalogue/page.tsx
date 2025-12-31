@@ -70,9 +70,11 @@ export default function CataloguePage() {
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
-          <h1 className="text-2xl md:text-3xl font-bold text-foreground">Product Catalogue</h1>
-          <p className="text-sm text-muted-foreground mt-1">Browse all shop items</p>
+        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-center md:justify-between items-start md:items-center">
+          <div>
+            <h1 className="text-2xl md:text-3xl font-bold text-foreground">Product Catalogue</h1>
+            <p className="text-sm text-muted-foreground mt-1">Browse all shop items</p>
+          </div>
         </div>
 
         <div className="p-4 md:p-6">
@@ -101,9 +103,8 @@ export default function CataloguePage() {
                       <h3 className="font-bold text-foreground">{brand.name}</h3>
                       <ChevronDown
                         size={20}
-                        className={`text-muted-foreground transition-transform ${
-                          expandedBrand === brand.name ? "rotate-180" : ""
-                        }`}
+                        className={`text-muted-foreground transition-transform ${expandedBrand === brand.name ? "rotate-180" : ""
+                          }`}
                       />
                     </button>
 
