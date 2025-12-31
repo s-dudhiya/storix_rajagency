@@ -8,7 +8,8 @@ import { MobileNav } from "@/components/layout/mobile-nav"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Plus, Printer, Trash2, Eye, Download } from "lucide-react"
+import { Plus, Printer, Trash2, Eye } from "lucide-react"
+import { DownloadBillButton } from "@/components/download-bill-button"
 import { useRouter } from "next/navigation"
 
 interface BillItem {
@@ -177,24 +178,7 @@ export default function BillsPage() {
     generateStandardBill(billData, "print")
   }
 
-  const handleDownloadBill = (bill: Bill) => {
-    const billData: BillData = {
-      bill_number: bill.bill_number,
-      bill_date: bill.bill_date,
-      customer_name: bill.customer_name,
-      shop_name: bill.shop_name || undefined,
-      phone: bill.phone || undefined,
-      items: bill.bill_items.map((item) => ({
-        item_name: item.item_name,
-        quantity: item.quantity,
-        unit_type: item.unit_type,
-        price: item.price,
-        total: item.total,
-      })),
-      total_amount: bill.total_amount,
-    }
-    generateStandardBill(billData, "download")
-  }
+
 
   const handleDelete = async (id: string) => {
     if (!window.confirm("Are you sure you want to delete this bill?")) return
@@ -320,10 +304,25 @@ export default function BillsPage() {
                         <Printer size={16} />
                         Print
                       </Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDownloadBill(bill)} className="gap-2">
-                        <Download size={16} />
-                        Save
-                      </Button>
+                      <DownloadBillButton
+                        billData={{
+                          bill_number: bill.bill_number,
+                          bill_date: bill.bill_date,
+                          customer_name: bill.customer_name,
+                          shop_name: bill.shop_name || undefined,
+                          phone: bill.phone || undefined,
+                          items: bill.bill_items.map((item) => ({
+                            item_name: item.item_name,
+                            quantity: item.quantity,
+                            unit_type: item.unit_type,
+                            price: item.price,
+                            total: item.total,
+                          })),
+                          total_amount: bill.total_amount,
+                        }}
+                        variant="outline"
+                        className="gap-2"
+                      />
                       <Button
                         variant="outline"
                         size="sm"
@@ -431,10 +430,25 @@ export default function BillsPage() {
                   <Printer size={16} />
                   Print PDF
                 </Button>
-                <Button variant="outline" onClick={() => handleDownloadBill(selectedBill)} className="flex-1 gap-2">
-                  <Download size={16} />
-                  Download
-                </Button>
+                <DownloadBillButton
+                  billData={{
+                    bill_number: selectedBill.bill_number,
+                    bill_date: selectedBill.bill_date,
+                    customer_name: selectedBill.customer_name,
+                    shop_name: selectedBill.shop_name || undefined,
+                    phone: selectedBill.phone || undefined,
+                    items: selectedBill.bill_items.map((item) => ({
+                      item_name: item.item_name,
+                      quantity: item.quantity,
+                      unit_type: item.unit_type,
+                      price: item.price,
+                      total: item.total,
+                    })),
+                    total_amount: selectedBill.total_amount,
+                  }}
+                  variant="outline"
+                  className="flex-1 gap-2"
+                />
                 <Button variant="outline" onClick={() => setViewBillDialogOpen(false)}>
                   Close
                 </Button>
