@@ -6,6 +6,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ChevronLeft, Plus, Trash2, AlertTriangle, Loader2 } from "lucide-react"
 import Link from "next/link"
 
@@ -186,9 +187,13 @@ export default function ManageTeamPage() {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg mb-4">
-            {error}
-          </div>
+          <Alert variant="destructive" className="mb-4">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              {error}
+            </AlertDescription>
+          </Alert>
         )}
 
         {showOrphaned && (

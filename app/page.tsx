@@ -5,6 +5,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertTriangle } from "lucide-react"
 import { signIn, getCurrentUser, resetPassword } from "@/lib/supabase/auth"
 
 export default function LoginPage() {
@@ -153,8 +155,13 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-background to-muted flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <main className="min-h-screen bg-linear-to-br from-background via-muted/50 to-primary/5 flex items-center justify-center px-4 relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/10 rounded-full blur-3xl" />
+      </div>
+      <div className="w-full max-w-md relative z-10">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-14 h-14 bg-primary rounded-xl mb-4">
@@ -196,21 +203,21 @@ export default function LoginPage() {
           {!showForgotPassword ? (
             <>
               {/* Role Selection */}
-              <div className="flex gap-2 mb-6">
+              <div className="flex gap-2 mb-6 p-1 bg-muted/30 rounded-lg border border-border/50">
                 <button
                   onClick={() => setRole("owner")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${role === "owner"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-secondary"
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all duration-200 ${role === "owner"
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                     }`}
                 >
                   Owner
                 </button>
                 <button
                   onClick={() => setRole("labour")}
-                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-colors ${role === "labour"
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-secondary"
+                  className={`flex-1 py-2 px-3 rounded-md text-sm font-medium transition-all duration-200 ${role === "labour"
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
                     }`}
                 >
                   Labour
@@ -219,9 +226,13 @@ export default function LoginPage() {
 
               {/* Error Message */}
               {error && (
-                <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-md text-sm mb-4">
-                  {error}
-                </div>
+                <Alert variant="destructive" className="mb-6">
+                  <AlertTriangle className="h-4 w-4" />
+                  <AlertTitle>Authentication Failed</AlertTitle>
+                  <AlertDescription>
+                    {error}
+                  </AlertDescription>
+                </Alert>
               )}
 
               {/* Form */}

@@ -95,19 +95,19 @@ export function MobileNav({ role }: MobileNavProps) {
           }`}
       >
         {/* Header */}
-        <div className="h-20 p-4 border-b border-sidebar-border flex items-center justify-between">
+        <div className="h-20 p-4 border-b border-sidebar-border flex items-center justify-between bg-sidebar-accent/10">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-              <span className="text-sm font-bold text-primary-foreground">S</span>
+            <div className="w-10 h-10 bg-primary/20 rounded-lg flex items-center justify-center border border-primary/20">
+              <span className="text-lg font-bold text-primary">S</span>
             </div>
             <div>
-              <h1 className="font-bold text-sm text-foreground">STORIX</h1>
-              <p className="text-[10px] text-muted-foreground">RAJ AGENCY</p>
+              <h1 className="font-bold text-lg text-sidebar-foreground tracking-tight">STORIX</h1>
+              <p className="text-[10px] font-medium text-sidebar-foreground/60 tracking-wider">RAJ AGENCY</p>
             </div>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-2 hover:bg-sidebar-accent rounded-md transition-colors"
+            className="p-2 hover:bg-sidebar-accent rounded-md transition-colors text-sidebar-foreground/70 hover:text-sidebar-foreground"
             aria-label="Close menu"
           >
             <X size={20} />
@@ -124,12 +124,14 @@ export function MobileNav({ role }: MobileNavProps) {
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${isActive
-                        ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-all duration-200 group ${isActive
+                      ? "bg-sidebar-primary/10 text-sidebar-primary border-r-2 border-sidebar-primary"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
                       }`}
                   >
-                    {item.icon}
+                    <span className={`transition-transform duration-200 ${isActive ? "scale-110" : "group-hover:scale-110"}`}>
+                      {item.icon}
+                    </span>
                     <span>{item.label}</span>
                   </Link>
                 </li>
@@ -139,13 +141,13 @@ export function MobileNav({ role }: MobileNavProps) {
         </nav>
 
         {/* Settings & Logout */}
-        <div className="p-3 border-t border-sidebar-border space-y-1">
+        <div className="p-3 border-t border-sidebar-border space-y-1 bg-sidebar-accent/5">
           <Link
             href="/settings"
             onClick={() => setIsOpen(false)}
-            className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors group"
           >
-            <Settings size={20} />
+            <Settings size={20} className="group-hover:rotate-45 transition-transform duration-300" />
             <span>Settings</span>
           </Link>
           <button
@@ -153,9 +155,9 @@ export function MobileNav({ role }: MobileNavProps) {
               setIsOpen(false)
               handleLogout()
             }}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-sidebar-foreground hover:bg-sidebar-accent transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors group"
           >
-            <LogOut size={20} />
+            <LogOut size={20} className="group-hover:-translate-x-1 transition-transform duration-200" />
             <span>Logout</span>
           </button>
         </div>
