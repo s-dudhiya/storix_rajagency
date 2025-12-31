@@ -8,7 +8,7 @@ import { MobileNav } from "@/components/layout/mobile-nav"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Plus, Printer, Trash2, Eye } from "lucide-react"
+import { Plus, Printer, Trash2, Eye, Search } from "lucide-react"
 import { DownloadBillButton } from "@/components/download-bill-button"
 import { useRouter } from "next/navigation"
 
@@ -215,128 +215,159 @@ export default function BillsPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 md:sticky md:top-0 md:z-40 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold text-foreground">Bills</h1>
-            <p className="text-sm text-muted-foreground mt-1">Manage and generate bills</p>
+      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
+        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+          <div className="flex flex-col justify-center h-full">
+            <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Bills</h1>
+            <p className="text-xs font-medium text-muted-foreground hidden md:block">Manage and generate invoices</p>
           </div>
-          <Button onClick={() => router.push("/owner/generate-bill")} className="gap-2 w-full md:w-auto">
+          <Button
+            onClick={() => router.push("/owner/generate-bill")}
+            className="shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 gap-2 w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90"
+          >
             <Plus size={18} />
-            Generate Bill
+            <span className="hidden md:inline">Generate Bill</span>
+            <span className="md:hidden">New Bill</span>
           </Button>
         </div>
 
-        <div className="p-4 md:p-6 border-b border-border">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex-1">
-              <Input
-                placeholder="Search by customer, shop, or bill number..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <div className="flex gap-2">
-              <Input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full sm:w-auto"
-              />
-              {(searchQuery || selectedDate) && (
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setSearchQuery("")
-                    setSelectedDate("")
-                  }}
-                >
-                  Clear
-                </Button>
-              )}
+        <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+          {/* Filters */}
+          <div className="bg-card border border-border/50 rounded-xl p-4 shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex-1 relative group">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Input
+                  placeholder="Search by customer, shop, or bill number..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all"
+                />
+              </div>
+              <div className="flex gap-2 w-full sm:w-auto">
+                <Input
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  className="w-full sm:w-auto bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all"
+                />
+                {(searchQuery || selectedDate) && (
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setSearchQuery("")
+                      setSelectedDate("")
+                    }}
+                    className="border-dashed"
+                  >
+                    Clear
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="p-4 md:p-6 space-y-3">
-          {loading ? (
-            <p className="text-muted-foreground">Loading bills...</p>
-          ) : filteredBills.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">
-              {bills.length === 0 ? "No bills found" : "No bills match your filters"}
-            </p>
-          ) : (
-            filteredBills.map((bill) => (
-              <div
-                key={bill.id}
-                className="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-2">
-                      <p className="font-bold text-foreground">{bill.bill_number}</p>
-                      <span
-                        className={`inline-block px-2 py-1 text-xs font-medium rounded ${bill.bill_type === "app_order"
-                          ? "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
-                          : "bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-300"
-                          }`}
-                      >
-                        {bill.bill_type === "app_order" ? "App Order" : "Manual"}
-                      </span>
-                    </div>
-                    <p className="font-medium text-foreground">{bill.customer_name}</p>
-                    <p className="text-sm text-muted-foreground">{bill.shop_name || "No shop"}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {new Date(bill.bill_date).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                    <div className="text-right">
-                      <p className="text-xl font-bold text-primary">₹{bill.total_amount.toFixed(2)}</p>
-                    </div>
-                    <div className="flex gap-2 flex-wrap justify-end mt-4 sm:mt-0">
-                      <Button variant="outline" size="sm" onClick={() => handleViewBill(bill)} className="gap-2">
-                        <Eye size={16} />
-                        View
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => handlePrintBill(bill)} className="gap-2">
-                        <Printer size={16} />
-                        Print
-                      </Button>
-                      <DownloadBillButton
-                        billData={{
-                          bill_number: bill.bill_number,
-                          bill_date: bill.bill_date,
-                          customer_name: bill.customer_name,
-                          shop_name: bill.shop_name || undefined,
-                          phone: bill.phone || undefined,
-                          items: bill.bill_items.map((item) => ({
-                            item_name: item.item_name,
-                            quantity: item.quantity,
-                            unit_type: item.unit_type,
-                            price: item.price,
-                            total: item.total,
-                          })),
-                          total_amount: bill.total_amount,
-                        }}
-                        variant="outline"
-                        className="gap-2"
-                      />
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(bill.id)}
-                        className="gap-2 text-destructive hover:text-destructive"
-                      >
-                        <Trash2 size={16} />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+          <div className="space-y-4">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                <p className="text-muted-foreground animate-pulse">Loading bills...</p>
               </div>
-            ))
-          )}
+            ) : filteredBills.length === 0 ? (
+              <div className="text-center py-16 bg-muted/10 border-2 border-dashed border-border/50 rounded-xl">
+                <div className="h-14 w-14 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="h-6 w-6 text-muted-foreground/40" />
+                </div>
+                <h3 className="font-semibold text-foreground">No bills found</h3>
+                <p className="text-sm text-muted-foreground mt-1">Try adjusting your filters or create a new bill</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4">
+                {filteredBills.map((bill) => (
+                  <div
+                    key={bill.id}
+                    className="group bg-card hover:bg-muted/20 border border-border/50 rounded-xl p-5 hover:shadow-md transition-all duration-300 active:scale-[0.995]"
+                  >
+                    <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
+                      <div className="flex-1 space-y-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <p className="font-mono font-bold text-foreground text-lg tracking-tight">{bill.bill_number}</p>
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 text-[10px] uppercase tracking-wider font-bold rounded-full ${bill.bill_type === "app_order"
+                              ? "bg-blue-100/50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300 border border-blue-200/50"
+                              : "bg-purple-100/50 text-purple-700 dark:bg-purple-900/20 dark:text-purple-300 border border-purple-200/50"
+                              }`}
+                          >
+                            {bill.bill_type === "app_order" ? "App Order" : "Manual"}
+                          </span>
+                        </div>
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-sm">
+                          <p className="font-semibold text-foreground flex items-center gap-2">
+                            {bill.customer_name}
+                          </p>
+                          <span className="hidden sm:inline text-muted-foreground/40">•</span>
+                          <p className="text-muted-foreground font-medium">{bill.shop_name || "No shop linked"}</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground font-medium flex items-center gap-1 mt-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/40" />
+                          {new Date(bill.bill_date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-t-0 border-border/50">
+                        <div className="text-left sm:text-right flex-1 sm:flex-none">
+                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Total Amount</p>
+                          <p className="text-2xl font-bold text-primary tracking-tight">₹{bill.total_amount.toFixed(2)}</p>
+                        </div>
+
+                        <div className="flex gap-2 w-full sm:w-auto justify-end">
+                          <Button variant="outline" size="sm" onClick={() => handleViewBill(bill)} className="flex-1 sm:flex-none gap-2 h-9 border-border/60 hover:bg-background hover:border-primary/30 hover:text-primary transition-all">
+                            <Eye size={15} />
+                            View
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handlePrintBill(bill)} className="h-9 w-9 p-0 border-border/60 hover:bg-background hover:border-foreground/30 transition-all" title="Print">
+                            <Printer size={15} />
+                          </Button>
+                          <div className="h-9">
+                            <DownloadBillButton
+                              billData={{
+                                bill_number: bill.bill_number,
+                                bill_date: bill.bill_date,
+                                customer_name: bill.customer_name,
+                                shop_name: bill.shop_name || undefined,
+                                phone: bill.phone || undefined,
+                                items: bill.bill_items.map((item) => ({
+                                  item_name: item.item_name,
+                                  quantity: item.quantity,
+                                  unit_type: item.unit_type,
+                                  price: item.price,
+                                  total: item.total,
+                                })),
+                                total_amount: bill.total_amount,
+                              }}
+                              variant="outline"
+                              className="h-full w-9 p-0 border-border/60 hover:bg-background hover:border-foreground/30 transition-all"
+                            />
+                          </div>
+
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDelete(bill.id)}
+                            className="h-9 w-9 p-0 text-destructive border-destructive/20 hover:bg-destructive/10 hover:border-destructive/30 transition-all"
+                            title="Delete"
+                          >
+                            <Trash2 size={15} />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )
+            }
+          </div>
         </div>
       </main>
       <MobileNav role="owner" />

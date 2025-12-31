@@ -100,233 +100,256 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
+      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
         {/* Header */}
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
-          <div className="flex items-center gap-3 mb-3">
+        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
             <Link href="/owner/orders">
-              <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+              <Button variant="ghost" size="sm" className="hidden md:flex gap-2 text-muted-foreground hover:text-foreground">
                 <ChevronLeft size={18} />
                 Back
               </Button>
             </Link>
-          </div>
-          <div className="flex items-start justify-between">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Order {orderData.id.slice(0, 8)}</h1>
-              <p className="text-sm text-muted-foreground mt-1">
-                {new Date(orderData.order_date).toLocaleDateString()}
+              <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">
+                Order <span className="text-muted-foreground font-medium">#{orderData.id.slice(0, 8)}</span>
+              </h1>
+              <p className="text-xs font-medium text-muted-foreground hidden md:block">
+                View and manage order details
               </p>
             </div>
+          </div>
+          <div className="flex items-center gap-3">
             <span
-              className={`inline-block px-3 py-1 text-sm font-medium rounded ${getStatusColor(orderData.order_status)}`}
+              className={`px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-full border ${orderData.order_status.toLowerCase() === 'delivered'
+                  ? 'bg-green-500/10 text-green-600 border-green-500/20'
+                  : orderData.order_status.toLowerCase() === 'cancelled'
+                    ? 'bg-red-500/10 text-red-600 border-red-500/20'
+                    : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                }`}
             >
-              {orderData.order_status.charAt(0).toUpperCase() + orderData.order_status.slice(1)}
+              {orderData.order_status}
             </span>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-4 md:p-6 max-w-4xl mx-auto space-y-6">
-          {/* Customer Information */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-foreground mb-4">Customer Information</h3>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Name</p>
-                  <p className="text-foreground font-medium">{orderData.customers?.name || "N/A"}</p>
+        <div className="p-4 md:p-8 max-w-6xl mx-auto space-y-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Left Column: Customer & Order Info */}
+            <div className="space-y-6 md:col-span-2">
+              {/* Customer Information */}
+              <div className="bg-card border border-border/50 rounded-xl p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-4 border-b border-border/40 pb-3">
+                  <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <span className="font-bold text-xs">C</span>
+                  </div>
+                  <h3 className="font-semibold text-foreground">Customer Details</h3>
                 </div>
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Shop Name</p>
-                  <p className="text-foreground">{orderData.customers?.shop_name || "N/A"}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Name</p>
+                    <p className="text-foreground font-medium">{orderData.customers?.name || "N/A"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Shop Name</p>
+                    <p className="text-foreground">{orderData.customers?.shop_name || "N/A"}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Phone</p>
+                    <p className="text-foreground">{orderData.customers?.phone || "N/A"}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Phone</p>
-                  <p className="text-foreground">{orderData.customers?.phone || "N/A"}</p>
+              </div>
+
+              {/* Items Table */}
+              <div className="bg-card border border-border/50 rounded-xl overflow-hidden shadow-sm">
+                <div className="px-6 py-4 bg-muted/30 border-b border-border/50 flex justify-between items-center">
+                  <h3 className="font-semibold text-foreground">Order Items</h3>
+                  <span className="text-xs font-medium text-muted-foreground">{orderData.order_items.length} items</span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-muted/10 border-b border-border/50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Item</th>
+                        <th className="px-6 py-3 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">Unit</th>
+                        <th className="px-6 py-3 text-center text-xs font-bold text-muted-foreground uppercase tracking-wider">Qty</th>
+                        <th className="px-6 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">Price</th>
+                        <th className="px-6 py-3 text-right text-xs font-bold text-muted-foreground uppercase tracking-wider">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border/30">
+                      {orderData.order_items.map((item: OrderItem) => (
+                        <tr key={item.id} className="hover:bg-muted/20 transition-colors">
+                          <td className="px-6 py-4 text-sm text-foreground font-medium">
+                            {item.shop_items ? `${item.shop_items.brand_name} ${item.shop_items.product_name}` : "Unknown Item"}
+                          </td>
+                          <td className="px-6 py-4 text-center text-sm text-muted-foreground capitalize font-medium">
+                            {item.unit_type}
+                          </td>
+                          <td className="px-6 py-4 text-center text-sm text-foreground font-medium bg-muted/10">
+                            {item.quantity}
+                          </td>
+                          <td className="px-6 py-4 text-right text-sm text-muted-foreground">₹{item.price.toFixed(2)}</td>
+                          <td className="px-6 py-4 text-right text-sm font-bold text-foreground">
+                            ₹{item.total.toFixed(2)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="px-6 py-4 bg-muted/10 border-t border-border/50 flex justify-end">
+                  <div className="flex items-center gap-4 text-lg">
+                    <span className="font-semibold text-muted-foreground">Total:</span>
+                    <span className="font-bold text-primary">₹{orderData.total_amount.toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-foreground mb-4">Order Information</h3>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Order ID</p>
-                  <p className="text-foreground font-medium">{orderData.id.slice(0, 8)}</p>
+            {/* Right Column: Meta & Actions */}
+            <div className="space-y-6">
+              {/* Order Meta */}
+              <div className="bg-card border border-border/50 rounded-xl p-6 shadow-sm">
+                <h3 className="font-semibold text-foreground mb-4 border-b border-border/40 pb-2">Order Information</h3>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Order Date</span>
+                    <span className="font-medium">{new Date(orderData.order_date).toLocaleDateString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Created By</span>
+                    <span className="font-medium">{orderData.created_by_user?.full_name || "Owner"}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-muted-foreground">Generated Bill</span>
+                    <span className="font-mono text-xs bg-muted px-2 py-1 rounded">
+                      {orderData.bills?.[0]?.bill_number || "Not Generated"}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Date</p>
-                  <p className="text-foreground">{new Date(orderData.order_date).toLocaleDateString()}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Status</p>
-                  <p className="text-foreground capitalize">{orderData.order_status}</p>
-                </div>
-                <div>
-                  <p className="text-muted-foreground text-xs uppercase font-bold mb-1">Created By</p>
-                  <p className="text-foreground">{orderData.created_by_user?.full_name || "Owner"}</p>
-                </div>
+
+                {orderData.notes && (
+                  <div className="mt-6">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Notes</p>
+                    <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 text-sm text-amber-800 dark:text-amber-500">
+                      {orderData.notes}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          </div>
 
-          {/* Items */}
-          <div className="bg-card border border-border rounded-lg overflow-hidden shadow-sm">
-            <div className="px-6 py-4 bg-muted border-b border-border">
-              <h3 className="font-bold text-foreground">Order Items</h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-muted border-b border-border">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-sm font-bold text-foreground">Item</th>
-                    <th className="px-6 py-3 text-center text-sm font-bold text-foreground">Unit</th>
-                    <th className="px-6 py-3 text-center text-sm font-bold text-foreground">Qty</th>
-                    <th className="px-6 py-3 text-right text-sm font-bold text-foreground">Price</th>
-                    <th className="px-6 py-3 text-right text-sm font-bold text-foreground">Total</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orderData.order_items.map((item: OrderItem) => (
-                    <tr key={item.id} className="border-t border-border hover:bg-muted/50">
-                      <td className="px-6 py-3 text-sm text-foreground font-medium">
-                        {item.shop_items ? `${item.shop_items.brand_name} ${item.shop_items.product_name}` : "Unknown"}
-                      </td>
-                      <td className="px-6 py-3 text-center text-sm text-muted-foreground capitalize">
-                        {item.unit_type}
-                      </td>
-                      <td className="px-6 py-3 text-center text-sm text-foreground">{item.quantity}</td>
-                      <td className="px-6 py-3 text-right text-sm text-foreground">Rs. {item.price.toFixed(2)}</td>
-                      <td className="px-6 py-3 text-right text-sm font-medium text-foreground">
-                        Rs. {item.total.toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+              {/* Order Actions */}
+              <div className="bg-card border border-border/50 rounded-xl p-6 shadow-sm space-y-3">
+                <h3 className="font-semibold text-foreground mb-2">Actions</h3>
 
-          {/* Totals & Notes */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 bg-card border border-border rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-foreground mb-4">Additional Notes</h3>
-              <p className="text-sm text-foreground bg-muted rounded-md p-3">{orderData.notes || "No notes added"}</p>
-            </div>
+                {orderData.order_status.toLowerCase() !== "delivered" && (
+                  <form
+                    action={async () => {
+                      "use server"
+                      const supabase = await createServerClient()
+                      await supabase.from("orders").update({ order_status: "delivered" }).eq("id", orderData.id)
+                      redirect(`/owner/order-details/${orderData.id}`)
+                    }}
+                  >
+                    <Button type="submit" className="w-full bg-green-600 hover:bg-green-700 text-white shadow-sm gap-2 h-8">
+                      <Check size={18} />
+                      Mark Delivered
+                    </Button>
+                  </form>
+                )}
 
-            <div className="bg-card border border-border rounded-lg p-6 shadow-sm">
-              <h3 className="font-bold text-foreground mb-4">Order Total</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal:</span>
-                  <span className="text-foreground">Rs. {subtotal.toFixed(2)}</span>
+                <div className="w-full text-gray-600 shadow-sm gap-2 h-8">
+                  <PrintBillButton
+                    billData={{
+                      bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                      bill_date: orderData.order_date,
+                      customer_name: orderData.customers?.name || "N/A",
+                      shop_name: orderData.customers?.shop_name || undefined,
+                      phone: orderData.customers?.phone || undefined,
+                      items: orderData.order_items.map((item: OrderItem) => ({
+                        item_name: item.shop_items
+                          ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                          : "Unknown",
+                        quantity: item.quantity,
+                        unit_type: item.unit_type,
+                        price: item.price,
+                        total: item.total,
+                      })),
+                      total_amount: orderData.total_amount,
+                    }}
+                    className="w-full border-border/60"
+                    variant="outline"
+                  />
+                  <DownloadBillButton
+                    billData={{
+                      bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                      bill_date: orderData.order_date,
+                      customer_name: orderData.customers?.name || "N/A",
+                      shop_name: orderData.customers?.shop_name || undefined,
+                      phone: orderData.customers?.phone || undefined,
+                      items: orderData.order_items.map((item: OrderItem) => ({
+                        item_name: item.shop_items
+                          ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                          : "Unknown",
+                        quantity: item.quantity,
+                        unit_type: item.unit_type,
+                        price: item.price,
+                        total: item.total,
+                      })),
+                      total_amount: orderData.total_amount,
+                    }}
+                    className="w-full border-border/60"
+                    variant="outline"
+                  />
                 </div>
-                <div className="flex justify-between text-lg font-bold border-t border-border pt-2">
-                  <span className="text-foreground">Total:</span>
-                  <span className="text-primary">Rs. {orderData.total_amount.toFixed(2)}</span>
-                </div>
+
+                {orderData.order_status.toLowerCase() !== "cancelled" && (
+                  <form
+                    action={async () => {
+                      "use server"
+                      const supabase = await createServerClient()
+                      await supabase.from("orders").update({ order_status: "cancelled" }).eq("id", orderData.id)
+                      redirect(`/owner/order-details/${orderData.id}`)
+                    }}
+                    className="pt-2"
+                  >
+                    <Button
+                      type="submit"
+                      variant="ghost"
+                      className="w-full gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                    >
+                      <XIcon size={16} />
+                      Cancel Order
+                    </Button>
+                  </form>
+                )}
               </div>
-            </div>
-          </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <PrintBillButton
-              billData={{
-                bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
-                bill_date: orderData.order_date,
-                customer_name: orderData.customers?.name || "N/A",
-                shop_name: orderData.customers?.shop_name || undefined,
-                phone: orderData.customers?.phone || undefined,
-                items: orderData.order_items.map((item: OrderItem) => ({
-                  item_name: item.shop_items
-                    ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
-                    : "Unknown",
-                  quantity: item.quantity,
-                  unit_type: item.unit_type,
-                  price: item.price,
-                  total: item.total,
-                })),
-                total_amount: orderData.total_amount,
-              }}
-              className="flex-1"
-            />
-            <DownloadBillButton
-              billData={{
-                bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
-                bill_date: orderData.order_date,
-                customer_name: orderData.customers?.name || "N/A",
-                shop_name: orderData.customers?.shop_name || undefined,
-                phone: orderData.customers?.phone || undefined,
-                items: orderData.order_items.map((item: OrderItem) => ({
-                  item_name: item.shop_items
-                    ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
-                    : "Unknown",
-                  quantity: item.quantity,
-                  unit_type: item.unit_type,
-                  price: item.price,
-                  total: item.total,
-                })),
-                total_amount: orderData.total_amount,
-              }}
-              className="flex-1"
-              variant="outline"
-            />
-            {orderData.order_status.toLowerCase() !== "delivered" && (
-              <form
-                action={async () => {
-                  "use server"
-                  const supabase = await createServerClient()
-                  await supabase.from("orders").update({ order_status: "delivered" }).eq("id", orderData.id)
-                  redirect(`/owner/order-details/${orderData.id}`)
-                }}
-                className="flex-1"
-              >
-                <Button type="submit" className="w-full bg-green-600 text-white hover:bg-green-700 gap-2">
-                  <Check size={18} />
-                  Mark Delivered
-                </Button>
-              </form>
-            )}
-            {orderData.order_status.toLowerCase() !== "cancelled" && (
-              <form
-                action={async () => {
-                  "use server"
-                  const supabase = await createServerClient()
-                  await supabase.from("orders").update({ order_status: "cancelled" }).eq("id", orderData.id)
-                  redirect(`/owner/order-details/${orderData.id}`)
-                }}
-                className="flex-1"
-              >
-                <Button
-                  type="submit"
-                  variant="outline"
-                  className="w-full gap-2 text-destructive hover:text-destructive bg-transparent"
+              <div className="pt-2">
+                <form
+                  action={async () => {
+                    "use server"
+                    const supabase = await createServerClient()
+                    await supabase.from("orders").delete().eq("id", orderData.id)
+                    redirect("/owner/orders")
+                  }}
                 >
-                  <XIcon size={18} />
-                  Cancel Order
-                </Button>
-              </form>
-            )}
-            <form
-              action={async () => {
-                "use server"
-                const supabase = await createServerClient()
-                await supabase.from("orders").delete().eq("id", orderData.id)
-                redirect("/owner/orders")
-              }}
-              className="flex-1"
-            >
-              <Button
-                type="submit"
-                variant="outline"
-                className="w-full gap-2 text-destructive hover:text-destructive bg-transparent"
-              >
-                <Trash2 size={18} />
-                Delete Order
-              </Button>
-            </form>
+                  <Button
+                    type="submit"
+                    variant="ghost"
+                    size="sm"
+                    className="w-full gap-2 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/5 text-xs"
+                  >
+                    <Trash2 size={14} />
+                    Delete Permanently
+                  </Button>
+                </form>
+              </div>
+            </div>
           </div>
         </div>
       </main>

@@ -171,98 +171,106 @@ export default function ShopItemsPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold text-foreground">Shop Items</h1>
-            <p className="text-sm text-muted-foreground hidden md:block">Manage items available in your shop</p>
+      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
+        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+          <div className="flex flex-col justify-center h-full">
+            <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Shop Items</h1>
+            <p className="text-xs font-medium text-muted-foreground hidden md:block">Manage items available in your shop</p>
           </div>
-          <Button className="gap-2 w-full md:w-auto" onClick={() => setIsAddOpen(true)}>
-            <Plus size={16} />
-            Add Item
+          <Button
+            className="shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+            onClick={() => setIsAddOpen(true)}
+          >
+            <Plus size={18} />
+            <span className="hidden md:inline">Add Item</span>
+            <span className="md:hidden">Add</span>
           </Button>
         </div>
 
-        <div className="p-4 md:p-6 space-y-6">
-          <div className="bg-card border border-border rounded-lg p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+        <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
+          <div className="bg-card border border-border/50 rounded-xl p-4 shadow-sm">
+            <div className="relative group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
               <input
                 type="text"
                 placeholder="Search by product name or brand..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 bg-input border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full pl-10 pr-4 py-2.5 bg-muted/30 border border-border/60 rounded-lg text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
               />
             </div>
           </div>
 
           {/* Desktop Table View */}
-          <div className="hidden md:block bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="hidden md:block bg-card border border-border/50 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-muted/30 border-b border-border/50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">SR No.</th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">Product</th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">Brand</th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">Price</th>
-                    <th className="px-4 py-3 text-center text-sm font-bold text-foreground">Action</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">SR No.</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Product</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Brand</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Price</th>
+                    <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-border/30">
                   {filteredItems.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                        {items.length === 0 ? "No shop items found" : "No matching items"}
+                      <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <Search className="h-8 w-8 text-muted-foreground/30" />
+                          <p>{items.length === 0 ? "No shop items found" : "No matching items"}</p>
+                        </div>
                       </td>
                     </tr>
                   ) : (
                     filteredItems.map((item) => (
-                      <tr key={item.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                        <td className="px-4 py-3 text-sm font-bold text-primary">{item.sr_no}</td>
-                        <td className="px-4 py-3 text-sm text-foreground font-medium">{item.product_name}</td>
-                        <td className="px-4 py-3 text-sm text-muted-foreground">{item.brand_name}</td>
-                        <td className="px-4 py-3 text-sm text-foreground font-medium">
+                      <tr key={item.id} className="group hover:bg-muted/30 transition-colors duration-200">
+                        <td className="px-6 py-4 text-sm font-medium text-muted-foreground">#{item.sr_no}</td>
+                        <td className="px-6 py-4 text-sm font-medium text-foreground">{item.product_name}</td>
+                        <td className="px-6 py-4 text-sm text-muted-foreground">{item.brand_name}</td>
+                        <td className="px-6 py-4 text-sm font-semibold text-foreground">
                           {editingId === item.id ? (
-                            <input
-                              type="number"
-                              step="0.01"
-                              value={editValues.selling_price || ""}
-                              onChange={(e) => {
-                                const val = e.target.value
-                                if (val === "" || val === "0") {
-                                  setEditValues({ selling_price: "" as any })
-                                } else {
-                                  setEditValues({ selling_price: Number(val.replace(/^0+/, "")) || ("" as any) })
-                                }
-                              }}
-                              onFocus={(e) => {
-                                if (e.target.value === "0") e.target.value = ""
-                              }}
-                              onBlur={handleSave}
-                              autoFocus
-                              className="w-24 px-2 py-1 bg-input border border-border rounded text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                              placeholder="Price"
-                            />
+                            <div className="flex items-center gap-2">
+                              <span className="text-muted-foreground">₹</span>
+                              <input
+                                type="number"
+                                step="0.01"
+                                value={editValues.selling_price || ""}
+                                onChange={(e) => {
+                                  const val = e.target.value
+                                  if (val === "" || val === "0") {
+                                    setEditValues({ selling_price: "" as any })
+                                  } else {
+                                    setEditValues({ selling_price: Number(val.replace(/^0+/, "")) || ("" as any) })
+                                  }
+                                }}
+                                onFocus={(e) => {
+                                  if (e.target.value === "0") e.target.value = ""
+                                }}
+                                onBlur={handleSave}
+                                autoFocus
+                                className="w-24 px-2 py-1 bg-background border border-primary/50 rounded focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                placeholder="Price"
+                              />
+                            </div>
                           ) : (
-                            `${item.selling_price}`
+                            `₹${item.selling_price.toFixed(2)}`
                           )}
                         </td>
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-6 py-4 text-center">
                           <div className="flex gap-2 justify-center">
-                            <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="gap-2">
+                            <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-8 w-8 p-0 rounded-lg border-border/60 hover:bg-background hover:border-primary/30 hover:text-primary transition-all">
                               <Edit2 size={14} />
-                              Edit
                             </Button>
                             <Button
                               onClick={() => setDeletingId(item.id)}
                               size="sm"
                               variant="outline"
-                              className="gap-2 text-destructive hover:text-destructive"
+                              className="h-8 w-8 p-0 rounded-lg text-destructive border-destructive/20 hover:bg-destructive/10 hover:border-destructive/30 transition-all"
                             >
                               <Trash2 size={14} />
-                              Delete
                             </Button>
                           </div>
                         </td>
@@ -277,61 +285,68 @@ export default function ShopItemsPage() {
           {/* Mobile Card View */}
           <div className="md:hidden space-y-4">
             {filteredItems.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                {items.length === 0 ? "No shop items found" : "No matching items"}
+              <div className="text-center py-16 bg-muted/10 border-2 border-dashed border-border/50 rounded-xl">
+                <div className="h-14 w-14 bg-muted/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Search className="h-6 w-6 text-muted-foreground/40" />
+                </div>
+                <h3 className="font-semibold text-foreground">No items found</h3>
+                <p className="text-sm text-muted-foreground mt-1">Try adjusting your search</p>
               </div>
             ) : (
               filteredItems.map((item) => (
-                <div key={item.id} className="bg-card border border-border rounded-lg p-4 shadow-sm">
-                  <div className="flex justify-between items-start mb-2">
+                <div key={item.id} className="group bg-card hover:bg-muted/20 border border-border/50 rounded-xl p-5 shadow-sm active:scale-[0.99] transition-all duration-200">
+                  <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h3 className="font-bold text-foreground">{item.product_name}</h3>
+                      <h3 className="font-bold text-foreground text-lg">{item.product_name}</h3>
                       <p className="text-sm text-muted-foreground">{item.brand_name}</p>
                     </div>
-                    <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded">
+                    <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-1 rounded-full border border-primary/20">
                       #{item.sr_no}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center mt-3 pt-3 border-t border-border">
+                  <div className="flex justify-between items-center pt-3 border-t border-border/50">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-muted-foreground">Price:</span>
+                      <span className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Price:</span>
                       {editingId === item.id ? (
-                        <input
-                          type="number"
-                          step="0.01"
-                          value={editValues.selling_price || ""}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            if (val === "" || val === "0") {
-                              setEditValues({ selling_price: "" as any })
-                            } else {
-                              setEditValues({ selling_price: Number(val.replace(/^0+/, "")) || ("" as any) })
-                            }
-                          }}
-                          onFocus={(e) => {
-                            if (e.target.value === "0") e.target.value = ""
-                          }}
-                          onBlur={handleSave}
-                          autoFocus
-                          className="w-20 px-2 py-1 bg-input border border-border rounded text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                          placeholder="Price"
-                        />
+                        <div className="flex items-center gap-1">
+                          <span className="text-muted-foreground text-sm">₹</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            value={editValues.selling_price || ""}
+                            onChange={(e) => {
+                              const val = e.target.value
+                              if (val === "" || val === "0") {
+                                setEditValues({ selling_price: "" as any })
+                              } else {
+                                setEditValues({ selling_price: Number(val.replace(/^0+/, "")) || ("" as any) })
+                              }
+                            }}
+                            onFocus={(e) => {
+                              if (e.target.value === "0") e.target.value = ""
+                            }}
+                            onBlur={handleSave}
+                            autoFocus
+                            className="w-20 px-2 py-1 bg-background border border-primary/50 rounded text-sm focus:outline-none focus:ring-2 focus:ring-primary/20"
+                            placeholder="Price"
+                          />
+                        </div>
                       ) : (
-                        <span className="font-bold text-foreground">₹{item.selling_price}</span>
+                        <span className="font-bold text-primary text-lg">₹{item.selling_price.toFixed(2)}</span>
                       )}
                     </div>
-                    <div className="flex gap-2">
-                      <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-8 w-8 p-0">
-                        <Edit2 size={14} />
+                    <div className="flex gap-3">
+                      <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-9 w-9 p-0 rounded-lg border-border/60">
+                        <Edit2 size={16} />
                       </Button>
                       <Button
                         onClick={() => setDeletingId(item.id)}
                         size="sm"
                         variant="outline"
-                        className="h-8 w-8 p-0 text-destructive hover:text-destructive"
+                        className="h-9 w-9 p-0 rounded-lg text-destructive border-destructive/20 hover:bg-destructive/10"
                       >
-                        <Trash2 size={14} />
+                        <Trash2 size={16} />
                       </Button>
                     </div>
                   </div>
@@ -341,32 +356,34 @@ export default function ShopItemsPage() {
           </div>
 
           <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[425px]">
               <DialogHeader>
-                <DialogTitle>Add New Shop Item</DialogTitle>
-                <DialogDescription>Add a new item to your shop inventory</DialogDescription>
+                <DialogTitle>Add New Item</DialogTitle>
+                <DialogDescription>Add a new product to your shop's inventory.</DialogDescription>
               </DialogHeader>
               <div className="grid gap-4 py-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="brand">Brand Name</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="brand" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Brand Name</Label>
                   <Input
                     id="brand"
                     value={newShopItem.brand_name}
                     onChange={(e) => setNewShopItem({ ...newShopItem, brand_name: e.target.value })}
-                    placeholder="Enter brand name"
+                    placeholder="e.g. Parle"
+                    className="h-10 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="product">Product Name</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="product" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Product Name</Label>
                   <Input
                     id="product"
                     value={newShopItem.product_name}
                     onChange={(e) => setNewShopItem({ ...newShopItem, product_name: e.target.value })}
-                    placeholder="Enter product name"
+                    placeholder="e.g. G-Biscuit Small"
+                    className="h-10 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40"
                   />
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="price">Selling Price</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Selling Price</Label>
                   <Input
                     id="price"
                     type="number"
@@ -383,7 +400,8 @@ export default function ShopItemsPage() {
                     onFocus={(e) => {
                       if (e.target.value === "0") e.target.value = ""
                     }}
-                    placeholder="Enter selling price"
+                    placeholder="0.00"
+                    className="h-10 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40"
                   />
                 </div>
               </div>
@@ -401,7 +419,7 @@ export default function ShopItemsPage() {
           <Dialog open={!!deletingId} onOpenChange={(open) => !open && setDeletingId(null)}>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Delete Shop Item</DialogTitle>
+                <DialogTitle>Delete Item</DialogTitle>
                 <DialogDescription>
                   Are you sure you want to delete this item? This action cannot be undone.
                 </DialogDescription>

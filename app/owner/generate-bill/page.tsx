@@ -120,243 +120,286 @@ export default function GenerateBillPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:p-6 md:sticky md:top-0 md:z-40">
+      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
+        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" onClick={() => router.back()} className="gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.back()}
+              className="hidden md:flex gap-2 text-muted-foreground hover:text-foreground"
+            >
               <ArrowLeft size={18} />
               Back
             </Button>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">Generate Bill</h1>
-              <p className="text-sm text-muted-foreground mt-1">Create a new manual bill</p>
+              <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Generate Bill</h1>
+              <p className="text-xs font-medium text-muted-foreground hidden md:block">Create a new invoice manually</p>
             </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="text-right mr-4 hidden sm:block">
+              <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Total Payable</p>
+              <p className="text-xl font-bold text-primary tracking-tight">₹{totalAmount.toFixed(2)}</p>
+            </div>
+            <Button
+              onClick={handleSubmit}
+              disabled={submitting}
+              className="shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Check size={18} />
+              <span className="hidden md:inline">{submitting ? "Processing..." : "Create Bill"}</span>
+              <span className="md:hidden">{submitting ? "..." : "Save"}</span>
+            </Button>
           </div>
         </div>
 
-        <div className="p-4 md:p-8 max-w-6xl mx-auto">
+        <div className="p-4 md:p-8 max-w-5xl mx-auto space-y-8">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Customer Info */}
-            <div className="bg-card border border-border rounded-lg p-6 space-y-6">
-              <h2 className="text-lg font-semibold">Customer Information</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <Label htmlFor="customerName" className="text-sm font-medium mb-2 block">
-                    Customer Name*
-                  </Label>
-                  <Input
-                    id="customerName"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="h-12"
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="shopName" className="text-sm font-medium mb-2 block">
-                    Shop Name
-                  </Label>
-                  <Input
-                    id="shopName"
-                    value={shopName}
-                    onChange={(e) => setShopName(e.target.value)}
-                    className="h-12"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone" className="text-sm font-medium mb-2 block">
-                    Phone
-                  </Label>
-                  <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} className="h-12" />
+
+            {/* Customer Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs">1</span>
+                  Customer Details
+                </h2>
+              </div>
+
+              <div className="bg-card border border-border/50 rounded-xl p-6 shadow-sm">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="customerName" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      Customer Name <span className="text-primary">*</span>
+                    </Label>
+                    <Input
+                      id="customerName"
+                      placeholder="Enter name"
+                      value={customerName}
+                      onChange={(e) => setCustomerName(e.target.value)}
+                      className="h-11 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="shopName" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      Shop Name
+                    </Label>
+                    <Input
+                      id="shopName"
+                      placeholder="Enter shop name"
+                      value={shopName}
+                      onChange={(e) => setShopName(e.target.value)}
+                      className="h-11 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone" className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      Phone Number
+                    </Label>
+                    <Input
+                      id="phone"
+                      placeholder="Enter phone"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="h-11 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Items */}
-            <div className="bg-card border border-border rounded-lg p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Items</h2>
+            {/* Items Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between px-1">
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-primary text-xs">2</span>
+                  Order Items
+                </h2>
                 <Button
                   type="button"
                   size="sm"
                   variant="outline"
                   onClick={handleAddItem}
-                  className="gap-2 bg-transparent"
+                  className="gap-2 border-dashed border-border hover:border-primary/50 hover:bg-primary/5 hover:text-primary transition-all"
                 >
                   <Plus size={16} />
                   Add Item
                 </Button>
               </div>
+
               <div className="space-y-4">
                 {items.map((item, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-1 md:grid-cols-12 gap-4 p-6 bg-muted/30 rounded-lg border border-border"
+                    className="group relative bg-card hover:bg-muted/20 border border-border/50 rounded-xl p-5 shadow-sm transition-all duration-300"
                   >
-                    <div className="md:col-span-5">
-                      <Label className="text-sm mb-2 block">Item Name*</Label>
-                      <Popover
-                        open={openPopovers[index]}
-                        onOpenChange={(open) => setOpenPopovers({ ...openPopovers, [index]: open })}
-                      >
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={openPopovers[index]}
-                            className="w-full h-12 justify-between font-normal text-left bg-transparent"
+                    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-6">
+                      {/* Item Selection */}
+                      <div className="md:col-span-5 space-y-2">
+                        <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Item Name <span className="text-primary">*</span></Label>
+                        <Popover
+                          open={openPopovers[index]}
+                          onOpenChange={(open) => setOpenPopovers({ ...openPopovers, [index]: open })}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={openPopovers[index]}
+                              className="w-full h-11 justify-between font-normal text-left bg-muted/30 border-border/60 hover:bg-background hover:border-primary/40 focus:border-primary/40 transition-all"
+                            >
+                              <span className={cn("truncate", !item.item_name && "text-muted-foreground")}>
+                                {item.item_name || "Select item..."}
+                              </span>
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-[300px] sm:w-[400px] p-0" align="start">
+                            <Command>
+                              <CommandInput placeholder="Search shop items..." />
+                              <CommandList>
+                                <CommandEmpty>No items found.</CommandEmpty>
+                                <CommandGroup>
+                                  {shopItems.map((shopItem) => (
+                                    <CommandItem
+                                      key={shopItem.id}
+                                      value={`${shopItem.brand_name} ${shopItem.product_name}`}
+                                      onSelect={() => handleSelectShopItem(shopItem, index)}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          item.item_name === `${shopItem.brand_name} ${shopItem.product_name}`
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                      <div className="flex-1 flex justify-between items-center">
+                                        <span className="truncate mr-2">
+                                          {shopItem.brand_name} {shopItem.product_name}
+                                        </span>
+                                        <span className="text-sm font-semibold text-primary whitespace-nowrap">
+                                          ₹{shopItem.selling_price}
+                                        </span>
+                                      </div>
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+
+                        {/* Fallback input if needed, nicely tucked */}
+                        <Input
+                          placeholder="Or type manual name"
+                          value={item.item_name}
+                          onChange={(e) => handleItemChange(index, "item_name", e.target.value)}
+                          className="h-9 text-xs bg-transparent border-transparent hover:border-border/50 focus:border-primary/40 transition-all px-2 placeholder:text-muted-foreground/50"
+                        />
+                      </div>
+
+                      {/* Qty, Unit, Price Group */}
+                      <div className="md:col-span-6 grid grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Qty <span className="text-primary">*</span></Label>
+                          <Input
+                            type="number"
+                            placeholder="0"
+                            value={item.quantity}
+                            onChange={(e) => {
+                              const val = e.target.value
+                              if (val === "" || val === "0") {
+                                handleItemChange(index, "quantity", "")
+                              } else {
+                                handleItemChange(index, "quantity", val.replace(/^0+/, ""))
+                              }
+                            }}
+                            className="h-11 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all font-medium text-center"
+                            required
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Unit</Label>
+                          <select
+                            className="w-full h-11 px-3 bg-muted/30 border border-border/60 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all"
+                            value={item.unit_type}
+                            onChange={(e) => handleItemChange(index, "unit_type", e.target.value)}
                           >
-                            <span className={cn("truncate", !item.item_name && "text-muted-foreground")}>
-                              {item.item_name || "Search or select item..."}
-                            </span>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            <option value="piece">Pcs</option>
+                            <option value="carton">Box</option>
+                            <option value="kg">KG</option>
+                          </select>
+                        </div>
+                        <div className="space-y-2">
+                          <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Price <span className="text-primary">*</span></Label>
+                          <div className="relative">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">₹</span>
+                            <Input
+                              type="number"
+                              step="0.01"
+                              placeholder="0.00"
+                              value={item.price}
+                              onChange={(e) => {
+                                const val = e.target.value
+                                if (val === "" || val === "0") {
+                                  handleItemChange(index, "price", "")
+                                } else {
+                                  handleItemChange(index, "price", val.replace(/^0+(?=\d)/, ""))
+                                }
+                              }}
+                              className="h-11 pl-7 bg-muted/30 border-border/60 focus:bg-background focus:border-primary/40 transition-all font-medium text-right"
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Remove Button & Total */}
+                      <div className="md:col-span-1 flex flex-col justify-between items-end py-1">
+                        {items.length > 1 && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
+                            onClick={() => handleRemoveItem(index)}
+                            title="Remove Item"
+                          >
+                            <Trash2 size={16} />
                           </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-[300px] sm:w-[400px] p-0" align="start">
-                          <Command>
-                            <CommandInput placeholder="Search shop items..." />
-                            <CommandList>
-                              <CommandEmpty>No items found.</CommandEmpty>
-                              <CommandGroup>
-                                {shopItems.map((shopItem) => (
-                                  <CommandItem
-                                    key={shopItem.id}
-                                    value={`${shopItem.brand_name} ${shopItem.product_name}`}
-                                    onSelect={() => handleSelectShopItem(shopItem, index)}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        item.item_name === `${shopItem.brand_name} ${shopItem.product_name}`
-                                          ? "opacity-100"
-                                          : "opacity-0",
-                                      )}
-                                    />
-                                    <div className="flex-1 flex justify-between items-center">
-                                      <span className="truncate mr-2">
-                                        {shopItem.brand_name} {shopItem.product_name}
-                                      </span>
-                                      <span className="text-sm font-semibold text-primary whitespace-nowrap">
-                                        ₹{shopItem.selling_price}
-                                      </span>
-                                    </div>
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                      <Input
-                        placeholder="Or type custom item name"
-                        value={item.item_name}
-                        onChange={(e) => handleItemChange(index, "item_name", e.target.value)}
-                        className="h-10 mt-2 text-sm"
-                      />
-                    </div>
+                        )}
+                        <div className="bg-primary/5 px-2 py-1 rounded text-right w-full md:w-auto mt-2 md:mt-0">
+                          <p className="text-[10px] text-muted-foreground uppercase font-bold">Total</p>
+                          <p className="text-sm font-bold text-primary">
+                            ₹{((Number(item.quantity) || 0) * (Number(item.price) || 0)).toFixed(2)}
+                          </p>
+                        </div>
+                      </div>
 
-                    {/* Row for Qty, Unit, Price on mobile, columns on desktop */}
-                    <div className="md:col-span-6 grid grid-cols-3 gap-3">
-                      <div className="col-span-1 md:col-span-1">
-                        <Label className="text-sm mb-2 block">Qty*</Label>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          value={item.quantity}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            if (val === "" || val === "0") {
-                              handleItemChange(index, "quantity", "")
-                            } else {
-                              handleItemChange(index, "quantity", val.replace(/^0+/, ""))
-                            }
-                          }}
-                          onFocus={(e) => {
-                            if (e.target.value === "0") e.target.value = ""
-                          }}
-                          className="h-12 text-base px-2"
-                          required
-                        />
-                      </div>
-                      <div className="col-span-1 md:col-span-1">
-                        <Label className="text-sm mb-2 block">Unit*</Label>
-                        <select
-                          className="w-full h-12 px-2 bg-input border border-border rounded-md text-base focus:outline-none focus:ring-2 focus:ring-ring"
-                          value={item.unit_type}
-                          onChange={(e) => handleItemChange(index, "unit_type", e.target.value)}
-                        >
-                          <option value="piece">Pcs</option>
-                          <option value="carton">Box</option>
-                          <option value="kg">KG</option>
-                        </select>
-                      </div>
-                      <div className="col-span-1 md:col-span-1">
-                        <Label className="text-sm mb-2 block">Price*</Label>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          value={item.price}
-                          onChange={(e) => {
-                            const val = e.target.value
-                            if (val === "" || val === "0") {
-                              handleItemChange(index, "price", "")
-                            } else {
-                              handleItemChange(index, "price", val.replace(/^0+(?=\d)/, ""))
-                            }
-                          }}
-                          onFocus={(e) => {
-                            if (e.target.value === "0") e.target.value = ""
-                          }}
-                          className="h-12 text-base px-2"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    {items.length > 1 && (
-                      <div className="md:col-span-1 flex items-end justify-end md:justify-start">
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="ghost"
-                          className="h-12 w-12 text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleRemoveItem(index)}
-                        >
-                          <Trash2 size={20} />
-                        </Button>
-                      </div>
-                    )}
-                    <div className="md:col-span-12 pt-2 border-t border-border">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Item Total:</span>
-                        <span className="font-semibold">
-                          ₹{((Number(item.quantity) || 0) * (Number(item.price) || 0)).toFixed(2)}
-                        </span>
-                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Total */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="flex justify-between items-center text-2xl font-bold">
-                <span>Total Amount:</span>
-                <span className="text-primary">₹{totalAmount.toFixed(2)}</span>
+            {/* Sticky Mobile Footer for Total & Action */}
+            <div className="md:hidden fixed bottom-16 left-0 right-0 p-4 bg-background/80 backdrop-blur-md border-t border-border z-30 flex items-center justify-between gap-4 shadow-lg">
+              <div>
+                <p className="text-xs text-muted-foreground uppercase font-bold">Total Payable</p>
+                <p className="text-xl font-bold text-primary">₹{totalAmount.toFixed(2)}</p>
               </div>
+              <Button
+                onClick={handleSubmit}
+                disabled={submitting}
+                className="shadow-lg shadow-primary/20 bg-primary text-primary-foreground rounded-full px-6"
+                size="lg"
+              >
+                {submitting ? "..." : "Create Bill"}
+              </Button>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-4">
-              <Button type="submit" disabled={submitting} className="flex-1 h-12 text-base">
-                {submitting ? "Creating Bill..." : "Create Bill"}
-              </Button>
-              <Button type="button" variant="outline" onClick={() => router.back()} className="h-12 px-8 text-base">
-                Cancel
-              </Button>
-            </div>
           </form>
         </div>
       </main>

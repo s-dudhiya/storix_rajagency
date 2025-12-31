@@ -95,170 +95,222 @@ export interface BillData {
   total_amount: number
 }
 
+// Theme Colors (Warm Industrial)
+const THEME = {
+  primary: [165, 95, 40] as [number, number, number], // Warm Bronze
+  secondary: [250, 248, 245] as [number, number, number], // Warm Paper
+  text: [60, 50, 45] as [number, number, number], // Dark Warm Grey
+  textLight: [120, 110, 100] as [number, number, number], // Muted Warm Grey
+  border: [200, 190, 180] as [number, number, number], // Soft Warm Border
+}
+
 export function generateStandardBill(data: BillData, action: "download" | "print" = "print"): void {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
-  let yPos = 15
+  let yPos = 20
 
-  doc.setFontSize(24)
+  // --- Header Section ---
+  doc.setFontSize(28)
+  doc.setTextColor(THEME.primary[0], THEME.primary[1], THEME.primary[2])
   doc.setFont("helvetica", "bold")
-  doc.text("RAJ AGENCY", pageWidth / 2, yPos, { align: "center" })
-  yPos += 6
+  doc.text("RAJ AGENCY", 15, yPos)
 
-  doc.setFontSize(9)
+  doc.setFontSize(10)
+  doc.setTextColor(THEME.textLight[0], THEME.textLight[1], THEME.textLight[2])
+  doc.setFont("helvetica", "bold")
+  doc.text("Wholesaler in Quality Products", 15, yPos + 6)
+
+  // Invoice Details (Top Right)
+  doc.setTextColor(THEME.text[0], THEME.text[1], THEME.text[2])
+  doc.setFontSize(20)
+  doc.text("INVOICE", pageWidth - 15, yPos, { align: "right" })
+
+  doc.setFontSize(10)
   doc.setFont("helvetica", "normal")
-  doc.text("Wholesaler in Quality Products", pageWidth / 2, yPos, { align: "center" })
-  yPos += 10
+  doc.text(`#${data.bill_number}`, pageWidth - 15, yPos + 6, { align: "right" })
+  doc.text(new Date(data.bill_date).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' }), pageWidth - 15, yPos + 11, { align: "right" })
 
+  yPos += 20
+
+  // --- Separator ---
+  doc.setDrawColor(THEME.primary[0], THEME.primary[1], THEME.primary[2])
   doc.setLineWidth(0.5)
   doc.line(15, yPos, pageWidth - 15, yPos)
-  yPos += 8
-
-  doc.setFontSize(9)
-  doc.setFont("helvetica", "normal")
-  doc.text(`Bill No: ${data.bill_number}`, pageWidth - 15, yPos, { align: "right" })
-  doc.text(`Date: ${new Date(data.bill_date).toLocaleDateString("en-IN")}`, pageWidth - 15, yPos + 5, {
-    align: "right",
-  })
-  yPos += 15
-
-  doc.setFillColor(245, 245, 245)
-  doc.rect(15, yPos, pageWidth - 30, 20, "F")
-  doc.setDrawColor(200, 200, 200)
-  doc.rect(15, yPos, pageWidth - 30, 20, "S")
-
-  yPos += 5
-  doc.setFontSize(8)
-  doc.setFont("helvetica", "bold")
-  doc.text("BILL TO:", 18, yPos)
-
-  doc.setFont("helvetica", "normal")
-  yPos += 5
-  doc.text(`Name: ${data.customer_name}`, 18, yPos)
-  if (data.shop_name) {
-    yPos += 4
-    doc.text(`Shop: ${data.shop_name}`, 18, yPos)
-  }
-  if (data.phone) {
-    yPos += 4
-    doc.text(`Phone: ${data.phone}`, 18, yPos)
-  }
   yPos += 10
 
+  // --- Customer & Shop Info ---
+  const leftColX = 15
+  const labelWidth = 35
+
+  doc.setTextColor(THEME.text[0], THEME.text[1], THEME.text[2])
+  doc.setFontSize(10)
+
+  // Customer Name
+  doc.setFont("helvetica", "bold")
+  doc.text("Customer Name:", leftColX, yPos)
+  doc.setFont("helvetica", "normal")
+  doc.text(data.customer_name, leftColX + labelWidth, yPos)
+  yPos += 6
+
+  // Shop Name
+  if (data.shop_name) {
+    doc.setFont("helvetica", "bold")
+    doc.text("Shop Name:", leftColX, yPos)
+    doc.setFont("helvetica", "normal")
+    doc.text(data.shop_name, leftColX + labelWidth, yPos)
+    yPos += 6
+  }
+
+  // Phone
+  if (data.phone) {
+    doc.setFont("helvetica", "bold")
+    doc.text("Phone Number:", leftColX, yPos)
+    doc.setFont("helvetica", "normal")
+    doc.text(`+91 ${data.phone}`, leftColX + labelWidth, yPos)
+    yPos += 6
+  }
+
+  yPos += 10
+
+  // --- Items Table ---
   const tableData = data.items.map((item, index) => [
     (index + 1).toString(),
     item.item_name,
-    item.unit_type.toUpperCase(),
     item.quantity.toString(),
     item.price.toFixed(2),
     item.total.toFixed(2),
   ])
 
+  // Ensure minimum rows for look
+  const minRows = 8
+  if (tableData.length < minRows) {
+    for (let i = tableData.length; i < minRows; i++) {
+      tableData.push(["", "", "", "", ""])
+    }
+  }
+
   autoTable(doc, {
     startY: yPos,
-    head: [["S.No", "Item Description", "Unit", "Qty", "Rate", "Amount"]],
+    head: [["S.No", "Item Description", "Qty", "Rate", "Amount"]],
     body: tableData,
-    theme: "striped",
+    theme: "plain", // Custom styling
     headStyles: {
-      fillColor: [41, 128, 185],
+      fillColor: THEME.primary,
       textColor: [255, 255, 255],
       fontSize: 9,
       fontStyle: "bold",
       halign: "center",
+      cellPadding: 3,
     },
     bodyStyles: {
       fontSize: 9,
-      textColor: [50, 50, 50],
+      textColor: THEME.text,
+      cellPadding: 3,
+      lineColor: THEME.border,
+      lineWidth: 0.1,
     },
     columnStyles: {
       0: { halign: "center", cellWidth: 15 },
-      1: { halign: "left", cellWidth: 60 },
+      1: { halign: "left", cellWidth: "auto" },
       2: { halign: "center", cellWidth: 20 },
-      3: { halign: "center", cellWidth: 20 },
-      4: { halign: "right", cellWidth: 30 },
-      5: { halign: "right", cellWidth: 35 },
+      3: { halign: "right", cellWidth: 30 },
+      4: { halign: "right", cellWidth: 35, fontStyle: "bold" },
     },
     alternateRowStyles: {
-      fillColor: [250, 250, 250],
+      fillColor: THEME.secondary,
     },
+    didParseCell: (data) => {
+      // Remove borders for cleaner look if desired, or keep them light
+      if (data.section === 'body' && data.row.index >= 0) {
+        data.cell.styles.lineWidth = 0.1;
+        data.cell.styles.lineColor = THEME.border;
+      }
+    }
   })
 
   yPos = (doc as any).lastAutoTable.finalY + 5
 
-  const totalsTableData = [
-    ["", "", "", "", "Sub Total:", data.total_amount.toFixed(2)],
-    ["", "", "", "", "Grand Total:", data.total_amount.toFixed(2)],
-  ]
+  // --- Totals Section ---
+  const rightMargin = pageWidth - 15
+  const totalLabelX = rightMargin - 40
+  const totalValueX = rightMargin
 
-  autoTable(doc, {
-    startY: yPos,
-    body: totalsTableData,
-    theme: "plain",
-    bodyStyles: {
-      fontSize: 10,
-      fontStyle: "bold",
-      textColor: [50, 50, 50],
-    },
-    columnStyles: {
-      0: { cellWidth: 15 },
-      1: { cellWidth: 60 },
-      2: { cellWidth: 20 },
-      3: { cellWidth: 20 },
-      4: { halign: "right", cellWidth: 30 },
-      5: { halign: "right", cellWidth: 35, fontSize: 11, textColor: [41, 128, 185] },
-    },
-  })
+  // Draw line above totals
+  doc.setDrawColor(THEME.border[0], THEME.border[1], THEME.border[2])
+  doc.setLineWidth(0.1)
+  doc.line(totalLabelX - 20, yPos, rightMargin, yPos)
+  yPos += 6
 
-  yPos = (doc as any).lastAutoTable.finalY + 8
+  doc.setFontSize(10)
 
+  // Total Amount
+  yPos += 4
+  doc.setTextColor(THEME.primary[0], THEME.primary[1], THEME.primary[2])
+  doc.setFontSize(14)
+  doc.setFont("helvetica", "bold")
+  doc.text("Total:", totalLabelX, yPos, { align: "right" })
+  doc.text(`Rs. ${data.total_amount.toFixed(2)}`, totalValueX, yPos, { align: "right" })
+
+  yPos += 15
+
+  // --- Amount in Words ---
   const amountInWords = numberToWords(Math.floor(data.total_amount))
   const paise = Math.round((data.total_amount - Math.floor(data.total_amount)) * 100)
   const fullAmountInWords =
     amountInWords + " Rupees" + (paise > 0 ? " and " + numberToWords(paise) + " Paise" : "") + " Only"
 
-  doc.setFillColor(245, 245, 245)
-  doc.rect(15, yPos, pageWidth - 30, 12, "F")
-  doc.setDrawColor(200, 200, 200)
-  doc.rect(15, yPos, pageWidth - 30, 12, "S")
-
-  yPos += 4
-  doc.setFontSize(8)
-  doc.setFont("helvetica", "bold")
-  doc.text("Amount in Words:", 18, yPos)
-
-  yPos += 5
-  doc.setFont("helvetica", "italic")
-  doc.text(fullAmountInWords, 18, yPos)
-  yPos += 10
-
-  doc.setFontSize(7)
-  doc.setFont("helvetica", "normal")
-  doc.text("Terms & Conditions:", 15, yPos)
-  yPos += 4
-  doc.text("1. Goods once sold will not be taken back or exchanged", 15, yPos)
-  yPos += 3
-  doc.text("2. All disputes are subject to local jurisdiction only", 15, yPos)
-  yPos += 8
-
-  doc.setFontSize(8)
-  doc.setFont("helvetica", "bold")
-  doc.text("For RAJ AGENCY", pageWidth - 15, pageHeight - 20, { align: "right" })
-  doc.line(pageWidth - 60, pageHeight - 15, pageWidth - 15, pageHeight - 15)
-  doc.setFont("helvetica", "normal")
-  doc.text("Authorized Signatory", pageWidth - 15, pageHeight - 10, { align: "right" })
+  doc.setFillColor(THEME.secondary[0], THEME.secondary[1], THEME.secondary[2])
+  doc.roundedRect(15, yPos, pageWidth - 30, 16, 2, 2, "F")
 
   doc.setFontSize(9)
-  doc.setFont("helvetica", "bolditalic")
-  doc.text("Thank You for Your Business!", pageWidth / 2, pageHeight - 10, { align: "center" })
+  doc.setTextColor(THEME.textLight[0], THEME.textLight[1], THEME.textLight[2])
+  doc.setFont("helvetica", "bold")
+  doc.text("Amount in Words:", 20, yPos + 6)
 
-  // Create filename: shopname_bill no
+  doc.setFontSize(10)
+  doc.setTextColor(THEME.text[0], THEME.text[1], THEME.text[2])
+  doc.setFont("helvetica", "italic")
+  doc.text(fullAmountInWords, 20, yPos + 12)
+
+  // --- Footer ---
+  const footerY = pageHeight - 30
+
+  // Terms
+  doc.setFontSize(8)
+  doc.setTextColor(THEME.textLight[0], THEME.textLight[1], THEME.textLight[2])
+  doc.setFont("helvetica", "bold")
+  doc.text("Terms & Conditions:", 15, footerY)
+  doc.setFont("helvetica", "normal")
+  doc.text("1. Goods once sold will not be taken back.", 15, footerY + 5)
+  doc.text("2. Disputes subject to local jurisdiction.", 15, footerY + 9)
+
+  // Signatory
+  doc.setFontSize(9)
+  doc.setTextColor(THEME.text[0], THEME.text[1], THEME.text[2])
+  doc.setFont("helvetica", "bold")
+  doc.text("For RAJ AGENCY", pageWidth - 15, footerY, { align: "right" })
+
+  // Signature Line
+  doc.setDrawColor(THEME.textLight[0], THEME.textLight[1], THEME.textLight[2])
+  doc.line(pageWidth - 55, footerY + 15, pageWidth - 15, footerY + 15)
+
+  doc.setFontSize(8)
+  doc.setFont("helvetica", "normal")
+  doc.text("Authorized Signatory", pageWidth - 15, footerY + 20, { align: "right" })
+
+  // Thank You
+  doc.setFontSize(8)
+  doc.setTextColor(THEME.primary[0], THEME.primary[1], THEME.primary[2])
+  doc.setFont("helvetica", "bold")
+  doc.text("THANK YOU FOR YOUR BUSINESS", pageWidth / 2, pageHeight - 10, { align: "center" })
+
+  // --- File Saving ---
   const namePrefix = data.shop_name || data.customer_name || "Bill"
   const sanitizedPrefix = namePrefix.replace(/[^a-zA-Z0-9]/g, "_")
   const sanitizedBillNo = data.bill_number.replace(/[^a-zA-Z0-9]/g, "_")
   const fileName = `${sanitizedPrefix}_${sanitizedBillNo}`
 
-  // Set PDF metadata
   doc.setProperties({
     title: fileName,
     subject: `Bill ${data.bill_number}`,
@@ -267,20 +319,13 @@ export function generateStandardBill(data: BillData, action: "download" | "print
   })
 
   if (action === "print") {
-    // We don't use autoPrint() here because we want to control the print from the wrapper
-    // to ensure the filename is respected
     const blob = doc.output("blob")
     const blobUrl = URL.createObjectURL(blob)
-
-    // Check if mobile device
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
 
     if (isMobile) {
-      // On mobile, opening the blob directly is more reliable to avoid black screens
-      // Mobile browsers handles PDF viewing/printing natively well enough
       window.open(blobUrl, "_blank")
     } else {
-      // On desktop, use the wrapper to ensure correct filename and auto-print
       const printWindow = window.open("", "_blank")
       if (printWindow) {
         printWindow.document.write(`
@@ -327,49 +372,31 @@ export interface InventoryReportData {
 export function generateInventoryReport(data: InventoryReportData): void {
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
-  let yPos = 15
+  let yPos = 20
 
   // Title
-  doc.setFontSize(20)
+  doc.setFontSize(22)
+  doc.setTextColor(THEME.primary[0], THEME.primary[1], THEME.primary[2])
   doc.setFont("helvetica", "bold")
-  doc.text("INVENTORY REPORT", pageWidth / 2, yPos, { align: "center" })
-  yPos += 8
+  doc.text("INVENTORY REPORT", 15, yPos)
 
-  // Company name
-  doc.setFontSize(14)
-  doc.text("RAJ AGENCY", pageWidth / 2, yPos, { align: "center" })
-  yPos += 10
-
-  // Date and Time
   doc.setFontSize(10)
+  doc.setTextColor(THEME.textLight[0], THEME.textLight[1], THEME.textLight[2])
   doc.setFont("helvetica", "normal")
+  doc.text("RAJ AGENCY", 15, yPos + 6)
+
+  yPos += 15
+
+  // Meta Info
   const date = new Date(data.generated_at)
-  const formattedDate = date.toLocaleDateString("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  })
-  const formattedTime = date.toLocaleTimeString("en-IN", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  })
-  doc.text(`Generated on: ${formattedDate} at ${formattedTime}`, pageWidth / 2, yPos, { align: "center" })
-  yPos += 8
-
-  // Separator line
-  doc.setLineWidth(0.5)
-  doc.line(15, yPos, pageWidth - 15, yPos)
-  yPos += 8
-
-  // Summary
   doc.setFontSize(10)
-  doc.setFont("helvetica", "bold")
-  doc.text(`Total Products: ${data.items.length}`, 15, yPos)
+  doc.setTextColor(THEME.text[0], THEME.text[1], THEME.text[2])
+  doc.text(`Generated: ${date.toLocaleString("en-IN")}`, 15, yPos)
+  doc.text(`Total Products: ${data.items.length}`, pageWidth - 15, yPos, { align: "right" })
+
   yPos += 10
 
-  // Table data
+  // Table
   const tableData = data.items.map((item) => [
     item.sr_no.toString(),
     item.product_name,
@@ -377,39 +404,40 @@ export function generateInventoryReport(data: InventoryReportData): void {
     item.stock_quantity.toString(),
   ])
 
-  // Generate table with auto-pagination
   autoTable(doc, {
     startY: yPos,
     head: [["SR No", "Product", "Brand", "Stock"]],
     body: tableData,
-    theme: "striped",
+    theme: "plain",
     headStyles: {
-      fillColor: [41, 128, 185],
+      fillColor: THEME.primary,
       textColor: [255, 255, 255],
       fontSize: 10,
       fontStyle: "bold",
       halign: "center",
+      cellPadding: 3,
     },
     bodyStyles: {
       fontSize: 9,
-      textColor: [50, 50, 50],
+      textColor: THEME.text,
+      cellPadding: 3,
+      lineColor: THEME.border,
+      lineWidth: 0.1,
     },
     columnStyles: {
-      0: { halign: "center", cellWidth: 25 },
-      1: { halign: "left", cellWidth: 70 },
-      2: { halign: "left", cellWidth: 60 },
-      3: { halign: "center", cellWidth: 25 },
+      0: { halign: "center", cellWidth: 20 },
+      1: { halign: "left", cellWidth: "auto" },
+      2: { halign: "left", cellWidth: 50 },
+      3: { halign: "center", cellWidth: 30 },
     },
     alternateRowStyles: {
-      fillColor: [250, 250, 250],
+      fillColor: THEME.secondary,
     },
-    margin: { top: 10, bottom: 15 },
     didDrawPage: (data) => {
-      // Add page numbers
       const pageCount = (doc as any).internal.getNumberOfPages()
       const currentPage = (doc as any).internal.getCurrentPageInfo().pageNumber
       doc.setFontSize(8)
-      doc.setFont("helvetica", "normal")
+      doc.setTextColor(THEME.textLight[0], THEME.textLight[1], THEME.textLight[2])
       doc.text(`Page ${currentPage} of ${pageCount}`, pageWidth / 2, doc.internal.pageSize.getHeight() - 10, {
         align: "center",
       })

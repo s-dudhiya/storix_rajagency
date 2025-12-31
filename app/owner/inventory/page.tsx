@@ -214,22 +214,23 @@ export default function InventoryPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
-        <div className="bg-card border-b border-border p-4 md:px-6 md:h-20 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-xl md:text-2xl font-semibold text-foreground">Inventory Management</h1>
-            <p className="text-sm text-muted-foreground hidden md:block">Manage your product inventory</p>
+      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
+        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+          <div className="flex flex-col justify-center h-full">
+            <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Inventory Management</h1>
+            <p className="text-xs font-medium text-muted-foreground hidden md:block">Track and manage your stock levels</p>
           </div>
-          <div className="flex gap-2 w-full md:w-auto">
-            <Button onClick={handleExportPDF} variant="outline" className="flex-1 md:flex-none gap-2 bg-transparent">
+          <div className="flex items-center gap-2 md:gap-3">
+            <Button onClick={handleExportPDF} variant="outline" size="sm" className="h-9 gap-2 bg-transparent border-primary/20 hover:bg-primary/5 hover:text-primary transition-all duration-300 hidden md:flex">
               <FileDown size={16} />
-              Export PDF
+              Export
             </Button>
             <Dialog open={isAddOpen} onOpenChange={setIsAddOpen}>
               <DialogTrigger asChild>
-                <Button className="flex-1 md:flex-none gap-2">
+                <Button size="sm" className="h-9 gap-2 shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all duration-300">
                   <Plus size={16} />
-                  Add Product
+                  <span className="hidden md:inline">Add Product</span>
+                  <span className="md:hidden">Add</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-[425px]">
@@ -298,71 +299,83 @@ export default function InventoryPage() {
           </div>
         </div>
 
-        <div className="p-4 md:p-6 space-y-6">
+        <div className="p-4 md:p-8 space-y-6 max-w-7xl mx-auto">
           {/* Low Stock Alert */}
           {lowStockItems.length > 0 && (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="text-yellow-600 dark:text-yellow-500 mt-0.5" size={20} />
+            <div className="animate-in fade-in slide-in-from-top-4 duration-500 bg-orange-50/50 dark:bg-orange-900/10 border border-orange-200/60 dark:border-orange-800/60 rounded-xl p-4 shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg shrink-0">
+                  <AlertTriangle className="text-orange-600 dark:text-orange-500" size={20} />
+                </div>
                 <div>
-                  <h3 className="font-bold text-yellow-900 dark:text-yellow-200">Low Stock Alert</h3>
-                  <p className="text-sm text-yellow-800 dark:text-yellow-300 mt-1">
-                    {lowStockItems.length} product(s) are running low on stock
+                  <h3 className="font-semibold text-orange-900 dark:text-orange-200">Low Stock Alert</h3>
+                  <p className="text-sm text-orange-800/80 dark:text-orange-300/80 mt-1 leading-relaxed">
+                    <span className="font-bold">{lowStockItems.length}</span> product(s) in your inventory are running low on stock. Please restock soon.
                   </p>
                 </div>
               </div>
             </div>
           )}
 
-          <div className="bg-card border border-border rounded-lg p-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
-              <input
-                type="text"
-                placeholder="Search by product name or brand..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 bg-input border border-border rounded-md text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              />
+          {/* Search Bar */}
+          <div className="relative group">
+            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+              <Search className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors duration-300" />
             </div>
+            <input
+              type="text"
+              placeholder="Search by product name or brand..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-card border border-border/60 rounded-xl text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-300 shadow-sm"
+            />
           </div>
 
           {/* Desktop Inventory Table */}
-          <div className="hidden md:block bg-card border border-border rounded-lg shadow-sm overflow-hidden">
+          <div className="hidden md:block bg-card border border-border/40 rounded-xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-muted border-b border-border">
+                <thead className="bg-muted/30 border-b border-border/40">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">SR No</th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">Product</th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">Brand</th>
-                    <th className="px-4 py-3 text-left text-sm font-bold text-foreground">Stock</th>
-                    <th className="px-4 py-3 text-center text-sm font-bold text-foreground">Action</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">SR No</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Product</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Brand</th>
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">Stock</th>
+                    <th className="px-6 py-4 text-center text-xs font-semibold text-muted-foreground uppercase tracking-wider">Actions</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-border/30">
                   {filteredItems.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
-                        {items.length === 0 ? "No products found" : "No matching products"}
+                      <td colSpan={5} className="px-6 py-12 text-center">
+                        <div className="flex flex-col items-center justify-center gap-2">
+                          <div className="h-10 w-10 bg-muted rounded-full flex items-center justify-center mb-2">
+                            <Search className="h-5 w-5 text-muted-foreground/50" />
+                          </div>
+                          <p className="text-foreground font-medium">No products found</p>
+                          <p className="text-sm text-muted-foreground">Try adjusting your search query</p>
+                        </div>
                       </td>
                     </tr>
                   ) : (
                     filteredItems.map((item) => (
-                      <tr key={item.id} className="border-b border-border hover:bg-muted/50 transition-colors">
-                        <td className="px-4 py-3 text-sm font-bold text-primary">{item.sr_no}</td>
-                        <td className="px-4 py-3 text-sm text-foreground font-medium">{item.product_name}</td>
-                        <td className="px-4 py-3 text-sm text-muted-foreground">{item.brand_name}</td>
-                        <td className="px-4 py-3 text-sm">
+                      <tr key={item.id} className="group hover:bg-muted/30 transition-colors duration-200">
+                        <td className="px-6 py-4 text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">#{item.sr_no}</td>
+                        <td className="px-6 py-4 text-sm font-semibold text-foreground">{item.product_name}</td>
+                        <td className="px-6 py-4 text-sm text-muted-foreground">{item.brand_name}</td>
+                        <td className="px-6 py-4 text-sm">
                           {item.stock_quantity <= lowStockThreshold ? (
-                            <span className="inline-block px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 rounded text-xs font-medium">
-                              {item.stock_quantity} ⚠️
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-red-700 dark:bg-red-900/10 dark:text-red-300 border border-red-200/50 dark:border-red-800/30 rounded-md text-xs font-medium">
+                              <AlertTriangle size={12} />
+                              {item.stock_quantity}
                             </span>
                           ) : (
-                            <span className="text-foreground font-medium">{item.stock_quantity}</span>
+                            <span className="inline-flex items-center px-2.5 py-1 bg-green-50 text-green-700 dark:bg-green-900/10 dark:text-green-300 border border-green-200/50 dark:border-green-800/30 rounded-md text-xs font-medium">
+                              {item.stock_quantity}
+                            </span>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-center">
+                        <td className="px-6 py-4 text-center">
                           <div className="flex gap-2 justify-center">
                             <Button
                               onClick={() => {
@@ -371,23 +384,28 @@ export default function InventoryPage() {
                               }}
                               size="sm"
                               variant="outline"
-                              className="gap-2 text-orange-600 hover:text-orange-700"
+                              className="h-8 w-8 p-0 rounded-lg text-orange-600 border-orange-200 hover:bg-orange-50 hover:border-orange-300 transition-all"
+                              title="Quick Reduce"
                             >
                               <Minus size={14} />
-                              Quick Reduce
                             </Button>
-                            <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="gap-2">
+                            <Button
+                              onClick={() => handleEdit(item)}
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 rounded-lg text-foreground border-border hover:bg-muted/80 hover:border-foreground/20 transition-all"
+                              title="Edit"
+                            >
                               <Edit2 size={14} />
-                              Edit
                             </Button>
                             <Button
                               onClick={() => setDeletingId(item.id)}
                               size="sm"
                               variant="outline"
-                              className="gap-2 text-destructive hover:text-destructive"
+                              className="h-8 w-8 p-0 rounded-lg text-destructive border-destructive/20 hover:bg-destructive/5 hover:border-destructive/40 transition-all"
+                              title="Delete"
                             >
                               <Trash2 size={14} />
-                              Delete
                             </Button>
                           </div>
                         </td>
@@ -402,34 +420,38 @@ export default function InventoryPage() {
           {/* Mobile Inventory Card View */}
           <div className="md:hidden space-y-4">
             {filteredItems.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                {items.length === 0 ? "No products found" : "No matching products"}
+              <div className="text-center py-12 text-muted-foreground flex flex-col items-center">
+                <div className="h-12 w-12 bg-muted/50 rounded-full flex items-center justify-center mb-3">
+                  <Search className="h-6 w-6 text-muted-foreground/40" />
+                </div>
+                <p>{items.length === 0 ? "No products found" : "No matching products"}</p>
               </div>
             ) : (
               filteredItems.map((item) => (
-                <div key={item.id} className="bg-card border border-border rounded-lg p-4 shadow-sm">
-                  <div className="flex justify-between items-start mb-2">
+                <div key={item.id} className="bg-card border border-border/50 rounded-xl p-4 shadow-sm active:scale-[0.99] transition-transform duration-100">
+                  <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h3 className="font-bold text-foreground">{item.product_name}</h3>
-                      <p className="text-sm text-muted-foreground">{item.brand_name}</p>
+                      <h3 className="font-bold text-foreground text-base tracking-tight">{item.product_name}</h3>
+                      <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mt-1">{item.brand_name}</p>
                     </div>
-                    <span className="text-xs font-bold bg-primary/10 text-primary px-2 py-1 rounded">
+                    <span className="text-xs font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-md border border-primary/10">
                       #{item.sr_no}
                     </span>
                   </div>
 
-                  <div className="flex justify-between items-center my-3">
-                    <span className="text-sm text-muted-foreground">Stock Level:</span>
+                  <div className="flex justify-between items-center my-4 p-3 bg-muted/30 rounded-lg">
+                    <span className="text-sm font-medium text-muted-foreground">Current Stock</span>
                     {item.stock_quantity <= lowStockThreshold ? (
-                      <span className="inline-block px-2 py-1 bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-300 rounded text-xs font-medium">
-                        {item.stock_quantity} ⚠️
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-red-700 border border-red-200 rounded-md text-sm font-bold">
+                        <AlertTriangle size={14} />
+                        {item.stock_quantity}
                       </span>
                     ) : (
-                      <span className="text-foreground font-medium">{item.stock_quantity}</span>
+                      <span className="text-foreground font-bold text-lg">{item.stock_quantity}</span>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2 pt-3 border-t border-border">
+                  <div className="grid grid-cols-3 gap-2">
                     <Button
                       onClick={() => {
                         setQuickReduceId(item.id)
@@ -437,22 +459,22 @@ export default function InventoryPage() {
                       }}
                       size="sm"
                       variant="outline"
-                      className="text-xs gap-1 text-orange-600 hover:text-orange-700"
+                      className="h-9 text-xs gap-1.5 text-orange-600 border-orange-200/60 hover:bg-orange-50 bg-orange-50/30"
                     >
-                      <Minus size={12} />
+                      <Minus size={14} />
                       Reduce
                     </Button>
-                    <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="text-xs gap-1">
-                      <Edit2 size={12} />
+                    <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-9 text-xs gap-1.5">
+                      <Edit2 size={14} />
                       Edit
                     </Button>
                     <Button
                       onClick={() => setDeletingId(item.id)}
                       size="sm"
                       variant="outline"
-                      className="text-xs gap-1 text-destructive hover:text-destructive"
+                      className="h-9 text-xs gap-1.5 text-destructive border-destructive/20 hover:bg-destructive/10"
                     >
-                      <Trash2 size={12} />
+                      <Trash2 size={14} />
                       Delete
                     </Button>
                   </div>

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Printer } from "lucide-react"
 import { generateStandardBill, type BillData } from "@/lib/pdf-generator"
 
-export function PrintBillButton({ billData, className }: { billData: BillData; className?: string }) {
+export function PrintBillButton({ billData, className, variant = "default" }: { billData: BillData; className?: string, variant?: "default" | "outline" | "secondary" | "ghost" }) {
     const handlePrint = () => {
         try {
             generateStandardBill(billData, "print")
@@ -17,7 +17,8 @@ export function PrintBillButton({ billData, className }: { billData: BillData; c
     return (
         <Button
             onClick={handlePrint}
-            className={className || "w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2"}
+            variant={variant}
+            className={className || "w-full gap-2"}
         >
             <Printer size={18} />
             Print PDF
