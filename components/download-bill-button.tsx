@@ -39,7 +39,7 @@ export function DownloadBillButton({ billData, className, variant = "default" }:
             className={className || "w-full gap-2"}
         >
             <Download size={18} />
-            Download PDF
+            Save
         </Button>
     )
 }
