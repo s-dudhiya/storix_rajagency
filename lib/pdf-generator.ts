@@ -397,8 +397,8 @@ export function generateInventoryReport(data: InventoryReportData): void {
   yPos += 10
 
   // Table
-  const tableData = data.items.map((item) => [
-    item.sr_no.toString(),
+  const tableData = data.items.map((item, index) => [
+    (index + 1).toString(),
     item.product_name,
     item.brand_name,
     item.stock_quantity.toString(),

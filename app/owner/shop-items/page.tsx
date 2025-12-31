@@ -225,9 +225,9 @@ export default function ShopItemsPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredItems.map((item) => (
+                    filteredItems.map((item, index) => (
                       <tr key={item.id} className="group hover:bg-muted/30 transition-colors duration-200">
-                        <td className="px-6 py-4 text-sm font-medium text-muted-foreground">#{item.sr_no}</td>
+                        <td className="px-6 py-4 text-sm font-medium text-muted-foreground">{index + 1}</td>
                         <td className="px-6 py-4 text-sm font-medium text-foreground">{item.product_name}</td>
                         <td className="px-6 py-4 text-sm text-muted-foreground">{item.brand_name}</td>
                         <td className="px-6 py-4 text-sm font-semibold text-foreground">
@@ -293,7 +293,7 @@ export default function ShopItemsPage() {
                 <p className="text-sm text-muted-foreground mt-1">Try adjusting your search</p>
               </div>
             ) : (
-              filteredItems.map((item) => (
+              filteredItems.map((item, index) => (
                 <div key={item.id} className="group bg-card hover:bg-muted/20 border border-border/50 rounded-xl p-5 shadow-sm active:scale-[0.99] transition-all duration-200">
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -301,7 +301,7 @@ export default function ShopItemsPage() {
                       <p className="text-sm text-muted-foreground">{item.brand_name}</p>
                     </div>
                     <span className="text-[10px] font-bold bg-primary/10 text-primary px-2 py-1 rounded-full border border-primary/20">
-                      #{item.sr_no}
+                      #{index + 1}
                     </span>
                   </div>
 

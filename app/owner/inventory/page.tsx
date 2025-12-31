@@ -358,9 +358,9 @@ export default function InventoryPage() {
                       </td>
                     </tr>
                   ) : (
-                    filteredItems.map((item) => (
+                    filteredItems.map((item, index) => (
                       <tr key={item.id} className="group hover:bg-muted/30 transition-colors duration-200">
-                        <td className="px-6 py-4 text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">#{item.sr_no}</td>
+                        <td className="px-6 py-4 text-sm font-medium text-muted-foreground group-hover:text-primary transition-colors">{index + 1}</td>
                         <td className="px-6 py-4 text-sm font-semibold text-foreground">{item.product_name}</td>
                         <td className="px-6 py-4 text-sm text-muted-foreground">{item.brand_name}</td>
                         <td className="px-6 py-4 text-sm">
@@ -427,7 +427,7 @@ export default function InventoryPage() {
                 <p>{items.length === 0 ? "No products found" : "No matching products"}</p>
               </div>
             ) : (
-              filteredItems.map((item) => (
+              filteredItems.map((item, index) => (
                 <div key={item.id} className="bg-card border border-border/50 rounded-xl p-4 shadow-sm active:scale-[0.99] transition-transform duration-100">
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -435,7 +435,7 @@ export default function InventoryPage() {
                       <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mt-1">{item.brand_name}</p>
                     </div>
                     <span className="text-xs font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-md border border-primary/10">
-                      #{item.sr_no}
+                      #{index + 1}
                     </span>
                   </div>
 
