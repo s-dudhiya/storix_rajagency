@@ -159,7 +159,8 @@ export default function ManageTeamPage() {
     }
   }
 
-  <div className="flex min-h-screen bg-background">
+  return (
+    <div className="flex min-h-screen bg-background">
     <Sidebar role="owner" />
     <main className="flex-1 md:ml-64 pb-20 md:pb-0">
       <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
@@ -395,5 +396,5 @@ export default function ManageTeamPage() {
     </div>
     <MobileNav role="owner" />
   </div>
-  
+  )  
 }
