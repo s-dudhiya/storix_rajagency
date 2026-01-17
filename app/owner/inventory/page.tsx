@@ -496,7 +496,7 @@ export default function InventoryPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 gap-2">
                     <Button
                       onClick={() => {
                         setQuickReduceId(item.id)

@@ -323,7 +323,7 @@ export default function BillsPage() {
                         <div className="flex gap-2 w-full sm:w-auto justify-end">
                           <Button variant="outline" size="sm" onClick={() => handleViewBill(bill)} className="flex-1 sm:flex-none gap-2 h-9 border-border/60 hover:bg-background hover:border-primary/30 hover:text-primary transition-all">
                             <Eye size={15} />
-                            View
+                            <span className="hidden sm:inline">View</span>
                           </Button>
                           <Button variant="outline" size="sm" onClick={() => handlePrintBill(bill)} className="h-9 w-9 p-0 border-border/60 hover:bg-background hover:border-foreground/30 transition-all" title="Print">
                             <Printer size={15} />
