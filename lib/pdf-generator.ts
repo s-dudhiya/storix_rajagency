@@ -245,7 +245,25 @@ export function generateStandardBill(data: BillData, action: "download" | "print
   doc.setFontSize(10)
 
   // Total Amount
+  // Calculate Subtotal and Round Off
+  const subtotal = data.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const roundOff = data.total_amount - subtotal
+
+  // Subtotal
   yPos += 4
+  doc.setTextColor(THEME.text[0], THEME.text[1], THEME.text[2])
+  doc.setFontSize(10)
+  doc.setFont("helvetica", "normal")
+  doc.text("Sub Total:", totalLabelX, yPos, { align: "right" })
+  doc.text(`${subtotal.toFixed(2)}`, totalValueX, yPos, { align: "right" })
+
+  // Round Off
+  yPos += 5
+  doc.text("Round Off:", totalLabelX, yPos, { align: "right" })
+  doc.text(`${roundOff > 0 ? "+" : ""}${roundOff.toFixed(2)}`, totalValueX, yPos, { align: "right" })
+
+  // Total Amount
+  yPos += 8
   doc.setTextColor(THEME.primary[0], THEME.primary[1], THEME.primary[2])
   doc.setFontSize(14)
   doc.setFont("helvetica", "bold")

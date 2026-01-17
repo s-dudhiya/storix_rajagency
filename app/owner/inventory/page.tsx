@@ -43,6 +43,8 @@ export default function InventoryPage() {
   const [searchQuery, setSearchQuery] = useState("") // Add search state
   const [quickReduceId, setQuickReduceId] = useState<string | null>(null)
   const [quickReduceAmount, setQuickReduceAmount] = useState<number>(0)
+  const [quickAddId, setQuickAddId] = useState<string | null>(null)
+  const [quickAddAmount, setQuickAddAmount] = useState<number>(0)
   const [newProduct, setNewProduct] = useState<NewProductForm>({
     brand_name: "",
     product_name: "",
@@ -154,6 +156,37 @@ export default function InventoryPage() {
       }
     } catch (error) {
       console.error("[v0] Failed to add product:", error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleQuickAdd = async () => {
+    if (!quickAddId || quickAddAmount <= 0) return
+
+    const item = items.find((i) => i.id === quickAddId)
+    if (!item) return
+
+    const newStock = item.stock_quantity + quickAddAmount
+
+    setSaving(true)
+    try {
+      const response = await fetch(`/api/owner/inventory/${quickAddId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          stock_quantity: newStock,
+        }),
+      })
+
+      if (response.ok) {
+        const updatedProduct = await response.json()
+        setItems(items.map((item) => (item.id === quickAddId ? updatedProduct : item)))
+        setQuickAddId(null)
+        setQuickAddAmount(0)
+      }
+    } catch (error) {
+      console.error("[v0] Failed to add stock:", error)
     } finally {
       setSaving(false)
     }
@@ -390,6 +423,18 @@ export default function InventoryPage() {
                               <Minus size={14} />
                             </Button>
                             <Button
+                              onClick={() => {
+                                setQuickAddId(item.id)
+                                setQuickAddAmount(0)
+                              }}
+                              size="sm"
+                              variant="outline"
+                              className="h-8 w-8 p-0 rounded-lg text-primary border-primary/20 hover:bg-primary/5 hover:border-primary/40 transition-all"
+                              title="Quick Add"
+                            >
+                              <Plus size={14} />
+                            </Button>
+                            <Button
                               onClick={() => handleEdit(item)}
                               size="sm"
                               variant="outline"
@@ -463,6 +508,18 @@ export default function InventoryPage() {
                     >
                       <Minus size={14} />
                       Reduce
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setQuickAddId(item.id)
+                        setQuickAddAmount(0)
+                      }}
+                      size="sm"
+                      variant="outline"
+                      className="h-9 text-xs gap-1.5 text-primary border-primary/20 hover:bg-primary/5 bg-primary/5"
+                    >
+                      <Plus size={14} />
+                      Add
                     </Button>
                     <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-9 text-xs gap-1.5">
                       <Edit2 size={14} />
@@ -545,6 +602,68 @@ export default function InventoryPage() {
                   <Button onClick={() => setDeletingId(null)} variant="outline" className="flex-1" disabled={saving}>
                     Cancel
                   </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
+          {/* Quick Add Stock Modal */}
+          {quickAddId && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+              <div className="bg-card rounded-lg p-6 max-w-sm w-full">
+                <h2 className="text-lg font-bold text-foreground mb-2">Quick Add Stock</h2>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Current stock: {items.find((i) => i.id === quickAddId)?.stock_quantity || 0}
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-foreground mb-2">Add amount:</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={quickAddAmount || ""}
+                      onChange={(e) => {
+                        const val = e.target.value
+                        if (val === "" || val === "0") {
+                          setQuickAddAmount(0)
+                        } else {
+                          setQuickAddAmount(Number(val.replace(/^0+/, "")) || 0)
+                        }
+                      }}
+                      onFocus={(e) => {
+                        if (e.target.value === "0") e.target.value = ""
+                      }}
+                      className="w-full px-3 py-2 bg-input border border-border rounded-md text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      placeholder="Enter amount to add"
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    New stock will be:{" "}
+                    <span className="font-bold text-foreground">
+                      {(items.find((i) => i.id === quickAddId)?.stock_quantity || 0) + quickAddAmount}
+                    </span>
+                  </p>
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      onClick={handleQuickAdd}
+                      disabled={saving || quickAddAmount <= 0}
+                      className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      {saving ? "Adding..." : "Confirm Add"}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setQuickAddId(null)
+                        setQuickAddAmount(0)
+                      }}
+                      variant="outline"
+                      className="flex-1"
+                      disabled={saving}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

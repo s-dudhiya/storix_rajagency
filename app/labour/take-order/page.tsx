@@ -163,7 +163,7 @@ export default function LabourTakeOrderPage() {
 
     try {
       setSubmitting(true)
-      const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+      const total = Math.round(cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0))
 
       const itemsForAPI = cartItems.map((item) => ({
         id: item.product_id, // shop_item.id
@@ -179,7 +179,7 @@ export default function LabourTakeOrderPage() {
         body: JSON.stringify({
           customer_id: customer.id,
           items: itemsForAPI,
-          total_amount: total,
+          total_amount: Math.round(total),
         }),
       })
 
@@ -197,7 +197,7 @@ export default function LabourTakeOrderPage() {
     }
   }
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = Math.round(cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0))
 
   const handlePriceChange = (index: number, value: string) => {
     const numValue = Number(value.replace(/^0+/, "") || "0")

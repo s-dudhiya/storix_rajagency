@@ -443,8 +443,19 @@ export default function BillsPage() {
               </div>
 
               {/* Total */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center text-lg font-bold">
+              <div className="border-t pt-4 space-y-2">
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Sub Total:</span>
+                  <span>₹{selectedBill.bill_items.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-muted-foreground">Round Off:</span>
+                  <span>
+                    {(selectedBill.total_amount - selectedBill.bill_items.reduce((sum, item) => sum + (item.price * item.quantity), 0)) > 0 ? "+" : ""}
+                    {(selectedBill.total_amount - selectedBill.bill_items.reduce((sum, item) => sum + (item.price * item.quantity), 0)).toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center text-lg font-bold pt-2 border-t border-dashed">
                   <span>Total Amount:</span>
                   <span className="text-primary">₹{selectedBill.total_amount.toFixed(2)}</span>
                 </div>

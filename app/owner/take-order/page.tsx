@@ -219,7 +219,7 @@ export default function TakeOrderPage() {
         body: JSON.stringify({
           customer_id: customer.id,
           items: itemsForAPI,
-          total_amount: cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+          total_amount: Math.round(cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)),
         }),
       })
 
@@ -259,7 +259,7 @@ export default function TakeOrderPage() {
     }
   }
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = Math.round(cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0))
 
   if (step === 1) {
     return (

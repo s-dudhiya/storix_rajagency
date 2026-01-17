@@ -95,7 +95,7 @@ export default function GenerateBillPage() {
             quantity: Number(item.quantity) || 0,
             price: Number(item.price) || 0,
           })),
-          total_amount: total,
+          total_amount: Math.round(total),
         }),
       })
 
@@ -111,11 +111,11 @@ export default function GenerateBillPage() {
     }
   }
 
-  const totalAmount = items.reduce((sum, item) => {
+  const totalAmount = Math.round(items.reduce((sum, item) => {
     const qty = Number(item.quantity) || 0
     const price = Number(item.price) || 0
     return sum + qty * price
-  }, 0)
+  }, 0))
 
   return (
     <div className="flex min-h-screen bg-background">
