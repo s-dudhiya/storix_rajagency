@@ -12,7 +12,7 @@ export async function updateSession(request: NextRequest) {
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
   if (!supabaseUrl || !supabaseKey) {
-    console.warn("[v0] Supabase environment variables are missing in middleware. Skipping session refresh.")
+    console.warn("Supabase environment variables are missing in middleware. Skipping session refresh.")
     return response
   }
 
@@ -46,7 +46,7 @@ export async function updateSession(request: NextRequest) {
   } catch (error) {
     // Silently handle auth session refresh errors
     // The user's existing session will still work even if refresh fails
-    console.error("[v0] Session refresh failed:", error)
+    console.error("Session refresh failed:", error)
   }
 
   return response
