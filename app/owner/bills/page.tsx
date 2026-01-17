@@ -215,15 +215,15 @@ export default function BillsPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
-        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
+        <div className="bg-card border-b border-border p-4 md:px-8 md:h-20 md:sticky md:top-0 md:z-40 flex items-center justify-between gap-4">
           <div className="flex flex-col justify-center h-full">
             <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Bills</h1>
             <p className="text-xs font-medium text-muted-foreground hidden md:block">Manage and generate invoices</p>
           </div>
           <Button
             onClick={() => router.push("/owner/generate-bill")}
-            className="shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 gap-2 w-full md:w-auto bg-primary text-primary-foreground hover:bg-primary/90"
+            className="shadow-md shadow-primary/20 hover:shadow-primary/30 transition-all duration-300 gap-2 w-auto bg-primary text-primary-foreground hover:bg-primary/90"
           >
             <Plus size={18} />
             <span className="hidden md:inline">Generate Bill</span>
@@ -286,7 +286,7 @@ export default function BillsPage() {
                 {filteredBills.map((bill) => (
                   <div
                     key={bill.id}
-                    className="group bg-card hover:bg-muted/20 border border-border/50 rounded-xl p-5 hover:shadow-md transition-all duration-300 active:scale-[0.995]"
+                    className="group bg-card hover:bg-muted/20 border border-border/50 rounded-xl p-3 sm:p-5 hover:shadow-md transition-all duration-300 active:scale-[0.995]"
                   >
                     <div className="flex items-start justify-between gap-4 flex-col sm:flex-row">
                       <div className="flex-1 space-y-1">
@@ -314,18 +314,18 @@ export default function BillsPage() {
                         </p>
                       </div>
 
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto mt-4 sm:mt-0 pt-4 sm:pt-0 border-t sm:border-t-0 border-border/50">
-                        <div className="text-left sm:text-right flex-1 sm:flex-none">
-                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Total Amount</p>
-                          <p className="text-2xl font-bold text-primary tracking-tight">₹{bill.total_amount.toFixed(2)}</p>
+                      <div className="flex flex-row items-center justify-between w-full sm:w-auto mt-3 sm:mt-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-border/50 gap-4">
+                        <div className="text-left sm:text-right">
+                          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">Total</p>
+                          <p className="text-xl sm:text-2xl font-bold text-primary tracking-tight">₹{bill.total_amount.toFixed(2)}</p>
                         </div>
 
-                        <div className="flex gap-2 w-full sm:w-auto justify-end">
-                          <Button variant="outline" size="sm" onClick={() => handleViewBill(bill)} className="flex-1 sm:flex-none gap-2 h-9 border-border/60 hover:bg-background hover:border-primary/30 hover:text-primary transition-all">
+                        <div className="flex gap-2 sm:w-auto">
+                          <Button variant="outline" size="sm" onClick={() => handleViewBill(bill)} className="h-9 w-9 p-0 sm:w-auto sm:px-3 gap-2 border-border/60 hover:bg-background hover:border-primary/30 hover:text-primary transition-all">
                             <Eye size={15} />
                             <span className="hidden sm:inline">View</span>
                           </Button>
-                          <Button variant="outline" size="sm" onClick={() => handlePrintBill(bill)} className="h-9 w-9 p-0 border-border/60 hover:bg-background hover:border-foreground/30 transition-all" title="Print">
+                          <Button variant="outline" size="sm" onClick={() => handlePrintBill(bill)} className="hidden sm:inline-flex h-9 w-9 p-0 border-border/60 hover:bg-background hover:border-foreground/30 transition-all" title="Print">
                             <Printer size={15} />
                           </Button>
                           <div className="h-9">
@@ -468,7 +468,7 @@ export default function BillsPage() {
 
               {/* Action Buttons */}
               <div className="flex gap-2">
-                <Button onClick={() => handlePrintBill(selectedBill)} className="flex-1 gap-2">
+                <Button onClick={() => handlePrintBill(selectedBill)} className="hidden sm:flex flex-1 gap-2">
                   <Printer size={16} />
                   Print PDF
                 </Button>

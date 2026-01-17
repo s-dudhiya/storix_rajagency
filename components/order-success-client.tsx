@@ -199,7 +199,7 @@ export function OrderSuccessClient({ orderData, role }: { orderData: OrderData; 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Button
               onClick={handlePrintBill}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20 h-12 text-base"
+              className="hidden sm:flex w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20 h-12 text-base"
             >
               <Printer className="mr-2 h-5 w-5" />
               Print Invoice

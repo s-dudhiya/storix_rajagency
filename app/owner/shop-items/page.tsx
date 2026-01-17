@@ -158,7 +158,7 @@ export default function ShopItemsPage() {
     return (
       <div className="flex min-h-screen bg-background">
         <Sidebar role="owner" />
-        <main className="flex-1 md:ml-64 pb-20 md:pb-0">
+        <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
           <div className="p-4 md:p-6">
             <p className="text-muted-foreground">Loading shop items...</p>
           </div>
@@ -171,8 +171,8 @@ export default function ShopItemsPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
-        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
+        <div className="bg-card border-b border-border p-4 md:px-8 md:h-20 md:sticky md:top-0 md:z-40 flex items-center justify-between gap-4">
           <div className="flex flex-col justify-center h-full">
             <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Shop Items</h1>
             <p className="text-xs font-medium text-muted-foreground hidden md:block">Manage items available in your shop</p>

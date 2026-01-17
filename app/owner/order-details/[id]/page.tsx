@@ -102,7 +102,7 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
       <Sidebar role="owner" />
       <main className="flex-1 md:ml-64 pb-20 md:pb-0">
         {/* Header */}
-        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+        <div className="bg-card border-b border-border p-4 md:px-8 md:h-20 md:sticky md:top-0 md:z-40 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Link href="/owner/orders">
               <Button variant="ghost" size="sm" className="hidden md:flex gap-2 text-muted-foreground hover:text-foreground">
@@ -122,10 +122,10 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
           <div className="flex items-center gap-3">
             <span
               className={`px-3 py-1 text-xs font-bold uppercase tracking-wide rounded-full border ${orderData.order_status.toLowerCase() === 'delivered'
-                  ? 'bg-green-500/10 text-green-600 border-green-500/20'
-                  : orderData.order_status.toLowerCase() === 'cancelled'
-                    ? 'bg-red-500/10 text-red-600 border-red-500/20'
-                    : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                ? 'bg-green-500/10 text-green-600 border-green-500/20'
+                : orderData.order_status.toLowerCase() === 'cancelled'
+                  ? 'bg-red-500/10 text-red-600 border-red-500/20'
+                  : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
                 }`}
             >
               {orderData.order_status}
@@ -262,92 +262,95 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
                   </form>
                 )}
 
-                <div className="w-full text-gray-600 shadow-sm gap-2 h-8">
-                  <PrintBillButton
-                    billData={{
-                      bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
-                      bill_date: orderData.order_date,
-                      customer_name: orderData.customers?.name || "N/A",
-                      shop_name: orderData.customers?.shop_name || undefined,
-                      phone: orderData.customers?.phone || undefined,
-                      items: orderData.order_items.map((item: OrderItem) => ({
-                        item_name: item.shop_items
-                          ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
-                          : "Unknown",
-                        quantity: item.quantity,
-                        unit_type: item.unit_type,
-                        price: item.price,
-                        total: item.total,
-                      })),
-                      total_amount: orderData.total_amount,
-                    }}
-                    className="w-full border-border/60"
-                    variant="outline"
-                  />
-                  <DownloadBillButton
-                    billData={{
-                      bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
-                      bill_date: orderData.order_date,
-                      customer_name: orderData.customers?.name || "N/A",
-                      shop_name: orderData.customers?.shop_name || undefined,
-                      phone: orderData.customers?.phone || undefined,
-                      items: orderData.order_items.map((item: OrderItem) => ({
-                        item_name: item.shop_items
-                          ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
-                          : "Unknown",
-                        quantity: item.quantity,
-                        unit_type: item.unit_type,
-                        price: item.price,
-                        total: item.total,
-                      })),
-                      total_amount: orderData.total_amount,
-                    }}
-                    className="w-full border-border/60"
-                    variant="outline"
-                  />
+                <div className="w-full text-gray-600 shadow-sm gap-2 h-auto flex flex-col sm:flex-row">
+                  <div className="hidden sm:block flex-1">
+                    <PrintBillButton
+                      billData={{
+                        bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                        bill_date: orderData.order_date,
+                        customer_name: orderData.customers?.name || "N/A",
+                        shop_name: orderData.customers?.shop_name || undefined,
+                        phone: orderData.customers?.phone || undefined,
+                        items: orderData.order_items.map((item: OrderItem) => ({
+                          item_name: item.shop_items
+                            ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                            : "Unknown",
+                          quantity: item.quantity,
+                          unit_type: item.unit_type,
+                          price: item.price,
+                          total: item.total,
+                        })),
+                        total_amount: orderData.total_amount,
+                      }}
+                    />
+                  </div>
+
+                  <div className="flex-1">
+                    <DownloadBillButton
+                      billData={{
+                        bill_number: orderData.bills?.[0]?.bill_number || `ORD-${orderData.id.slice(0, 8)}`,
+                        bill_date: orderData.order_date,
+                        customer_name: orderData.customers?.name || "N/A",
+                        shop_name: orderData.customers?.shop_name || undefined,
+                        phone: orderData.customers?.phone || undefined,
+                        items: orderData.order_items.map((item: OrderItem) => ({
+                          item_name: item.shop_items
+                            ? `${item.shop_items.brand_name} ${item.shop_items.product_name}`
+                            : "Unknown",
+                          quantity: item.quantity,
+                          unit_type: item.unit_type,
+                          price: item.price,
+                          total: item.total,
+                        })),
+                        total_amount: orderData.total_amount,
+                      }}
+                      className="w-full border-border/60"
+                      variant="outline"
+                    />
+                  </div>
+
+                  {orderData.order_status.toLowerCase() !== "cancelled" && (
+                    <form
+                      action={async () => {
+                        "use server"
+                        const supabase = await createServerClient()
+                        await supabase.from("orders").update({ order_status: "cancelled" }).eq("id", orderData.id)
+                        redirect(`/owner/order-details/${orderData.id}`)
+                      }}
+                      className="pt-2"
+                    >
+                      <Button
+                        type="submit"
+                        variant="ghost"
+                        className="w-full gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      >
+                        <XIcon size={16} />
+                        Cancel Order
+                      </Button>
+                    </form>
+                  )}
                 </div>
 
-                {orderData.order_status.toLowerCase() !== "cancelled" && (
+                <div className="pt-2">
                   <form
                     action={async () => {
                       "use server"
                       const supabase = await createServerClient()
-                      await supabase.from("orders").update({ order_status: "cancelled" }).eq("id", orderData.id)
-                      redirect(`/owner/order-details/${orderData.id}`)
+                      await supabase.from("orders").delete().eq("id", orderData.id)
+                      redirect("/owner/orders")
                     }}
-                    className="pt-2"
                   >
                     <Button
                       type="submit"
                       variant="ghost"
-                      className="w-full gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      size="sm"
+                      className="w-full gap-2 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/5 text-xs"
                     >
-                      <XIcon size={16} />
-                      Cancel Order
+                      <Trash2 size={14} />
+                      Delete Permanently
                     </Button>
                   </form>
-                )}
-              </div>
-
-              <div className="pt-2">
-                <form
-                  action={async () => {
-                    "use server"
-                    const supabase = await createServerClient()
-                    await supabase.from("orders").delete().eq("id", orderData.id)
-                    redirect("/owner/orders")
-                  }}
-                >
-                  <Button
-                    type="submit"
-                    variant="ghost"
-                    size="sm"
-                    className="w-full gap-2 text-muted-foreground/50 hover:text-destructive hover:bg-destructive/5 text-xs"
-                  >
-                    <Trash2 size={14} />
-                    Delete Permanently
-                  </Button>
-                </form>
+                </div>
               </div>
             </div>
           </div>

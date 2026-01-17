@@ -234,7 +234,7 @@ export default function InventoryPage() {
     return (
       <div className="flex min-h-screen bg-background">
         <Sidebar role="owner" />
-        <main className="flex-1 md:ml-64 pb-20 md:pb-0">
+        <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
           <div className="p-4 md:p-6">
             <p className="text-muted-foreground">Loading inventory...</p>
           </div>
@@ -247,8 +247,8 @@ export default function InventoryPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
-        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
+        <div className="bg-card border-b border-border p-4 md:px-8 md:h-20 md:sticky md:top-0 md:z-40 flex items-center justify-between gap-4">
           <div className="flex flex-col justify-center h-full">
             <h1 className="text-xl md:text-2xl font-semibold text-foreground tracking-tight">Inventory Management</h1>
             <p className="text-xs font-medium text-muted-foreground hidden md:block">Track and manage your stock levels</p>
@@ -496,7 +496,7 @@ export default function InventoryPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-border/50">
                     <Button
                       onClick={() => {
                         setQuickReduceId(item.id)
@@ -504,10 +504,10 @@ export default function InventoryPage() {
                       }}
                       size="sm"
                       variant="outline"
-                      className="h-9 text-xs gap-1.5 text-orange-600 border-orange-200/60 hover:bg-orange-50 bg-orange-50/30"
+                      className="h-9 w-full p-0 text-destructive border-destructive/20 hover:bg-destructive/5 bg-destructive/5"
+                      title="Reduce"
                     >
-                      <Minus size={14} />
-                      Reduce
+                      <Minus size={16} />
                     </Button>
                     <Button
                       onClick={() => {
@@ -516,23 +516,28 @@ export default function InventoryPage() {
                       }}
                       size="sm"
                       variant="outline"
-                      className="h-9 text-xs gap-1.5 text-primary border-primary/20 hover:bg-primary/5 bg-primary/5"
+                      className="h-9 w-full p-0 text-primary border-primary/20 hover:bg-primary/5 bg-primary/5"
+                      title="Add"
                     >
-                      <Plus size={14} />
-                      Add
+                      <Plus size={16} />
                     </Button>
-                    <Button onClick={() => handleEdit(item)} size="sm" variant="outline" className="h-9 text-xs gap-1.5">
-                      <Edit2 size={14} />
-                      Edit
+                    <Button
+                      onClick={() => handleEdit(item)}
+                      size="sm"
+                      variant="outline"
+                      className="h-9 w-full p-0 border-border/60"
+                      title="Edit"
+                    >
+                      <Edit2 size={16} />
                     </Button>
                     <Button
                       onClick={() => setDeletingId(item.id)}
                       size="sm"
                       variant="outline"
-                      className="h-9 text-xs gap-1.5 text-destructive border-destructive/20 hover:bg-destructive/10"
+                      className="h-9 w-full p-0 text-destructive border-destructive/20 hover:bg-destructive/10"
+                      title="Delete"
                     >
-                      <Trash2 size={14} />
-                      Delete
+                      <Trash2 size={16} />
                     </Button>
                   </div>
                 </div>

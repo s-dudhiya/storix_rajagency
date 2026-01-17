@@ -120,8 +120,8 @@ export default function GenerateBillPage() {
   return (
     <div className="flex min-h-screen bg-background">
       <Sidebar role="owner" />
-      <main className="flex-1 md:ml-64 pb-20 md:pb-0">
-        <div className="bg-card/50 backdrop-blur-sm border-b border-border/50 h-20 px-4 md:px-8 sticky top-0 z-40 transition-all duration-200 flex items-center justify-between gap-4">
+      <main className="flex-1 md:ml-64 pt-16 md:pt-0 pb-20 md:pb-0">
+        <div className="bg-card border-b border-border p-4 md:px-8 md:h-20 md:sticky md:top-0 md:z-40 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
