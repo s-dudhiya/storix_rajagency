@@ -8,7 +8,7 @@ export async function signIn(email: string, password: string) {
     password,
   })
 
-  console.log("[v0] SignIn response:", { error, user: data?.user?.email })
+  console.log("SignIn response:", { error, user: data?.user?.email })
   if (error) throw error
   return data
 }
@@ -37,11 +37,21 @@ export async function getUserProfile(userId: string) {
 export async function resetPassword(email: string) {
   const supabase = createClient()
 
-  // Points to the auth confirmation route which exchanges the code for a session
-  const redirectUrl =
-    typeof window !== "undefined"
-      ? `${window.location.origin}/api/auth/confirm?next=/reset-password`
-      : "https://storix-rajagency.vercel.app/api/auth/confirm?next=/reset-password"
+  // Determine the base URL for the redirect
+  let siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ??
+    process.env.NEXT_PUBLIC_VERCEL_URL ??
+    (typeof window !== "undefined" ? window.location.origin : "http://localhost:3000")
+
+  // Ensure protocol is present (Vercel env vars don't include it)
+  if (!siteUrl.startsWith("http")) {
+    siteUrl = `https://${siteUrl}`
+  }
+
+  // Remove trailing slash if present
+  siteUrl = siteUrl.replace(/\/$/, "")
+
+  const redirectUrl = `${siteUrl}/api/auth/confirm?next=/reset-password`
 
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: redirectUrl,
